@@ -1039,16 +1039,24 @@
     /* ------- Responsive ------- */
     @media (max-width: 720px) {
       .topbar {
-        padding: 0 12px;
-        gap: 6px;
+        height: auto;
+        padding: 10px 12px;
+        flex-wrap: wrap;
+        gap: 8px;
       }
 
       .brand h1 {
-        display: none; /* Logo text gizle, sadece T kalsin */
+        display: none;
       }
 
       .search {
-        display: none; /* Mobilde search input'u gizle yer acilsin */
+        display: block;
+        width: 100%;
+        order: 99;
+      }
+      
+      .search input {
+        width: 100%;
       }
 
       .board-switch {
