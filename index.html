@@ -439,7 +439,7 @@
 
     .col-title {
       flex: 1;
-      font-weight: 650;
+      font-weight: 600;
       letter-spacing: -.005em;
       padding: 4px 6px;
       border-radius: 6px;
@@ -1040,11 +1040,15 @@
     @media (max-width: 720px) {
       .topbar {
         padding: 0 12px;
-        gap: 8px;
+        gap: 6px;
       }
 
-      .search input {
-        width: 140px;
+      .brand h1 {
+        display: none; /* Logo text gizle, sadece T kalsin */
+      }
+
+      .search {
+        display: none; /* Mobilde search input'u gizle yer acilsin */
       }
 
       .board-switch {
@@ -1419,6 +1423,7 @@
         input.select();
 
         const close = (val) => { back.remove(); resolve(val); };
+        back.onclick = (e) => { if (e.target === back) close(null); };
         back.querySelector('[data-cancel]').onclick = () => close(null);
         back.querySelector('[data-confirm]').onclick = () => close(input.value);
         input.onkeydown = (e) => {
@@ -1444,9 +1449,12 @@
     `;
         document.body.appendChild(back);
 
-        const close = (val) => { back.remove(); resolve(val); };
+        const close = (val) => { back.remove(); document.removeEventListener('keydown', onEsc); resolve(val); };
+        back.onclick = (e) => { if (e.target === back) close(false); };
         back.querySelector('[data-cancel]').onclick = () => close(false);
         back.querySelector('[data-confirm]').onclick = () => close(true);
+        const onEsc = (e) => { if (e.key === 'Escape') close(false); };
+        document.addEventListener('keydown', onEsc);
       });
     }
 
@@ -1898,6 +1906,7 @@
           dragClass: 'sortable-drag',
           filter: '.empty-col',
           delay: 120, delayOnTouchOnly: true, touchStartThreshold: 4,
+          onChoose: function() { if (navigator.vibrate) navigator.vibrate(50); }, /* Haptic feedback */
           onEnd: onCardSorted,
         }));
       });
