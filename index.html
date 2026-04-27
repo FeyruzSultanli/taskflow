@@ -1,824 +1,1814 @@
 <!doctype html>
 <html lang="tr">
+
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<meta name="theme-color" content="#0b1020" />
-<title>TaskFlow — Kanban</title>
-<link rel="icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%236366f1'/><rect x='7' y='7' width='5' height='18' rx='2' fill='white'/><rect x='14' y='7' width='5' height='12' rx='2' fill='white'/><rect x='21' y='7' width='4' height='8' rx='2' fill='white'/></svg>" />
-<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
-<style>
-  :root {
-    --bg: #f5f6fa;
-    --surface: #ffffff;
-    --surface-2: #fafbff;
-    --border: #e6e8ef;
-    --text: #0f172a;
-    --text-dim: #64748b;
-    --text-mute: #94a3b8;
-    --primary: #6366f1;
-    --primary-600: #4f46e5;
-    --primary-soft: #eef2ff;
-    --danger: #ef4444;
-    --success: #10b981;
-    --warn: #f59e0b;
-    --shadow-sm: 0 1px 2px rgba(15,23,42,.06);
-    --shadow: 0 4px 14px rgba(15,23,42,.08);
-    --shadow-lg: 0 20px 40px rgba(15,23,42,.18);
-    --radius: 12px;
-    --radius-sm: 8px;
-    --col-bg: #eef0f6;
-  }
-  [data-theme="dark"] {
-    --bg: #0b1020;
-    --surface: #141a2e;
-    --surface-2: #111730;
-    --border: #232a44;
-    --text: #eef1fb;
-    --text-dim: #a5adca;
-    --text-mute: #6c7494;
-    --primary: #818cf8;
-    --primary-600: #6366f1;
-    --primary-soft: #1e254a;
-    --col-bg: #151b33;
-    --shadow-sm: 0 1px 2px rgba(0,0,0,.4);
-    --shadow: 0 4px 14px rgba(0,0,0,.4);
-    --shadow-lg: 0 20px 40px rgba(0,0,0,.5);
-  }
-  * { box-sizing: border-box; }
-  html, body { height: 100%; }
-  body {
-    margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, Ubuntu, sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    font-size: 14px;
-    line-height: 1.45;
-    -webkit-font-smoothing: antialiased;
-    overscroll-behavior: none;
-  }
-  button, input, textarea, select { font: inherit; color: inherit; }
-  button { cursor: pointer; border: none; background: none; }
-  a { color: var(--primary); text-decoration: none; }
-  input, textarea, select {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    color: var(--text);
-    border-radius: var(--radius-sm);
-    padding: 9px 11px;
-    outline: none;
-    transition: border-color .15s, box-shadow .15s;
-    width: 100%;
-  }
-  input:focus, textarea:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-soft); }
-  textarea { resize: vertical; min-height: 80px; font-family: inherit; }
-  .btn {
-    display: inline-flex; align-items: center; gap: 6px;
-    padding: 8px 14px; border-radius: var(--radius-sm);
-    background: var(--surface); border: 1px solid var(--border);
-    color: var(--text); font-weight: 500;
-    transition: background .15s, border-color .15s, transform .05s;
-  }
-  .btn:hover { background: var(--surface-2); }
-  .btn:active { transform: translateY(1px); }
-  .btn.primary { background: var(--primary); color: #fff; border-color: var(--primary); }
-  .btn.primary:hover { background: var(--primary-600); border-color: var(--primary-600); }
-  .btn.danger { color: var(--danger); }
-  .btn.danger:hover { background: rgba(239,68,68,.08); }
-  .btn.ghost { background: transparent; border-color: transparent; }
-  .btn.ghost:hover { background: var(--surface-2); }
-  .btn.sm { padding: 5px 10px; font-size: 12.5px; }
-  .btn.icon { padding: 7px; width: 32px; height: 32px; justify-content: center; }
-  .chip {
-    display: inline-flex; align-items: center; gap: 4px;
-    padding: 2px 8px; border-radius: 999px; font-size: 11.5px;
-    background: var(--primary-soft); color: var(--primary-600);
-    font-weight: 600;
-  }
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="description" content="TaskFlow - Modern, sürükle-bırak özellikli Kanban proje yönetim tahtası." />
+  <meta name="theme-color" content="#0b1020" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <title>TaskFlow — Kanban</title>
+  <link rel="icon"
+    href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%236366f1'/><rect x='7' y='7' width='5' height='18' rx='2' fill='white'/><rect x='14' y='7' width='5' height='12' rx='2' fill='white'/><rect x='21' y='7' width='4' height='8' rx='2' fill='white'/></svg>" />
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --surface: #ffffff;
+      --surface-2: #fafbff;
+      --border: #e6e8ef;
+      --text: #0f172a;
+      --text-dim: #64748b;
+      --text-mute: #94a3b8;
+      --primary: #6366f1;
+      --primary-600: #4f46e5;
+      --primary-soft: #eef2ff;
+      --danger: #ef4444;
+      --success: #10b981;
+      --warn: #f59e0b;
+      --shadow-sm: 0 1px 2px rgba(15, 23, 42, .06);
+      --shadow: 0 4px 14px rgba(15, 23, 42, .08);
+      --shadow-lg: 0 20px 40px rgba(15, 23, 42, .18);
+      --radius: 12px;
+      --radius-sm: 8px;
+      --col-bg: #eef0f6;
+    }
 
-  /* ------- Auth screen ------- */
-  .auth-wrap {
-    min-height: 100dvh; display: grid; place-items: center; padding: 24px;
-    background: radial-gradient(1200px 600px at 10% -10%, rgba(99,102,241,.25), transparent 60%),
-                radial-gradient(900px 500px at 110% 110%, rgba(16,185,129,.18), transparent 60%),
-                var(--bg);
-  }
-  .auth-card {
-    width: 100%; max-width: 420px;
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: 16px; padding: 28px; box-shadow: var(--shadow-lg);
-  }
-  .brand { display: flex; align-items: center; gap: 10px; margin-bottom: 18px; }
-  .brand-mark {
-    width: 34px; height: 34px; border-radius: 9px;
-    background: linear-gradient(135deg, #6366f1, #22d3ee);
-    display: grid; place-items: center; color: white; font-weight: 800;
-    box-shadow: 0 6px 18px rgba(99,102,241,.45);
-  }
-  .brand h1 { margin: 0; font-size: 20px; letter-spacing: -0.01em; }
-  .auth-card h2 { margin: 8px 0 4px; font-size: 22px; letter-spacing: -.01em; }
-  .auth-card p.sub { color: var(--text-dim); margin: 0 0 18px; }
-  .field { margin-bottom: 12px; }
-  .field label { display: block; margin-bottom: 6px; font-size: 12.5px; color: var(--text-dim); font-weight: 500; }
-  .auth-card .btn.primary { width: 100%; justify-content: center; padding: 11px; }
-  .auth-switch { text-align: center; margin-top: 16px; color: var(--text-dim); font-size: 13px; }
-  .auth-switch button { color: var(--primary); font-weight: 600; padding: 2px 4px; }
-  .err { color: var(--danger); font-size: 12.5px; margin-top: 6px; min-height: 16px; }
+    [data-theme="dark"] {
+      --bg: #070b1b;
+      --surface: #0f1729;
+      --surface-2: #1a233a;
+      --border: #1e293b;
+      --text: #f1f5f9;
+      --text-dim: #94a3b8;
+      --text-mute: #64748b;
+      --primary: #818cf8;
+      --primary-600: #6366f1;
+      --primary-soft: #1e254a;
+      --col-bg: #0a0f20;
+      --shadow-sm: 0 1px 2px rgba(0, 0, 0, .4);
+      --shadow: 0 4px 14px rgba(0, 0, 0, .4);
+      --shadow-lg: 0 20px 40px rgba(0, 0, 0, .6);
+    }
 
-  /* ------- App shell ------- */
-  .app { display: flex; flex-direction: column; height: 100dvh; overflow: hidden; }
-  .topbar {
-    height: 56px; flex: 0 0 auto;
-    display: flex; align-items: center; gap: 14px;
-    padding: 0 18px; background: var(--surface);
-    border-bottom: 1px solid var(--border); z-index: 20;
-  }
-  .topbar .spacer { flex: 1; }
-  .board-switch {
-    display: flex; align-items: center; gap: 8px; padding: 6px 12px;
-    background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px;
-    font-weight: 600; max-width: 44vw;
-  }
-  .board-switch select {
-    background: transparent; border: none; padding: 0; width: auto; font-weight: 600;
-    max-width: 36vw; text-overflow: ellipsis;
-  }
-  .board-switch select:focus { box-shadow: none; }
-  .search {
-    position: relative;
-  }
-  .search input { width: 220px; padding-left: 32px; }
-  .search svg { position: absolute; left: 9px; top: 50%; transform: translateY(-50%); color: var(--text-mute); }
-  .avatar {
-    width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center;
-    color: #fff; font-weight: 700; font-size: 12px; flex-shrink: 0;
-    box-shadow: inset 0 0 0 2px var(--surface);
-  }
-  .user-menu { position: relative; }
-  .dropdown {
-    position: absolute; right: 0; top: calc(100% + 6px);
-    background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
-    min-width: 200px; box-shadow: var(--shadow-lg); padding: 6px; z-index: 40;
-  }
-  .dropdown button {
-    display: flex; align-items: center; gap: 8px;
-    width: 100%; padding: 8px 10px; border-radius: 6px; text-align: left;
-  }
-  .dropdown button:hover { background: var(--surface-2); }
-  .hr { height: 1px; background: var(--border); margin: 4px 0; }
+    * {
+      box-sizing: border-box;
+    }
 
-  /* ------- Board ------- */
-  .board-wrap {
-    flex: 1; overflow-x: auto; overflow-y: hidden;
-    padding: 18px; display: flex; gap: 14px; align-items: flex-start;
-    scroll-padding: 18px;
-  }
-  .column {
-    flex: 0 0 300px; max-height: 100%;
-    background: var(--col-bg); border-radius: var(--radius);
-    display: flex; flex-direction: column;
-    box-shadow: var(--shadow-sm);
-  }
-  .col-head {
-    display: flex; align-items: center; gap: 8px; padding: 12px 12px 8px;
-    cursor: grab;
-  }
-  .col-head:active { cursor: grabbing; }
-  .col-title {
-    flex: 1; font-weight: 650; letter-spacing: -.005em;
-    padding: 4px 6px; border-radius: 6px;
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-  }
-  .col-title:hover { background: rgba(0,0,0,.04); }
-  [data-theme="dark"] .col-title:hover { background: rgba(255,255,255,.06); }
-  .col-title[contenteditable="true"] { background: var(--surface); box-shadow: 0 0 0 2px var(--primary-soft); }
-  .col-count { font-size: 11.5px; color: var(--text-dim); padding: 0 6px; font-weight: 600; }
-  .col-menu { opacity: 0; transition: opacity .15s; }
-  .column:hover .col-menu { opacity: 1; }
-  .cards {
-    flex: 1; overflow-y: auto; padding: 4px 8px 8px; min-height: 20px;
-    display: flex; flex-direction: column; gap: 8px;
-  }
-  .card {
-    background: var(--surface); border-radius: var(--radius-sm);
-    padding: 10px 12px; box-shadow: var(--shadow-sm);
-    border: 1px solid var(--border);
-    cursor: grab; position: relative;
-    transition: box-shadow .15s, transform .05s, border-color .15s;
-    word-break: break-word;
-  }
-  .card:hover { box-shadow: var(--shadow); border-color: color-mix(in oklab, var(--primary) 40%, var(--border)); }
-  .card:active { cursor: grabbing; }
-  .card-labels { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 6px; }
-  .lbl { height: 6px; min-width: 32px; border-radius: 99px; }
-  .card-title { font-weight: 500; line-height: 1.35; }
-  .card-meta {
-    display: flex; align-items: center; gap: 8px; margin-top: 8px; flex-wrap: wrap;
-    color: var(--text-dim); font-size: 11.5px;
-  }
-  .meta-badge { display: inline-flex; align-items: center; gap: 4px; }
-  .meta-badge svg { width: 12px; height: 12px; }
-  .due { padding: 1px 6px; border-radius: 4px; background: var(--surface-2); }
-  .due.soon { background: #fef3c7; color: #92400e; }
-  .due.over { background: #fee2e2; color: #991b1b; }
-  [data-theme="dark"] .due.soon { background: #3a2d0c; color: #fbbf24; }
-  [data-theme="dark"] .due.over { background: #3a1414; color: #fca5a5; }
-  .card-assignees { margin-left: auto; display: flex; }
-  .card-assignees .avatar { width: 22px; height: 22px; font-size: 10.5px; margin-left: -6px; }
+    html,
+    body {
+      height: 100%;
+    }
 
-  .add-card, .add-col {
-    margin: 4px 8px 10px;
-    padding: 8px 10px; border-radius: 8px;
-    color: var(--text-dim); font-weight: 500; text-align: left;
-    display: flex; align-items: center; gap: 6px;
-    transition: background .15s, color .15s;
-  }
-  .add-card:hover, .add-col:hover { background: rgba(0,0,0,.05); color: var(--text); }
-  [data-theme="dark"] .add-card:hover, [data-theme="dark"] .add-col:hover { background: rgba(255,255,255,.05); }
-  .add-column-btn {
-    flex: 0 0 300px; align-self: flex-start;
-    padding: 12px; border-radius: var(--radius);
-    background: rgba(0,0,0,.04); color: var(--text-dim); font-weight: 500;
-    text-align: left; display: flex; align-items: center; gap: 6px;
-  }
-  .add-column-btn:hover { background: rgba(0,0,0,.07); color: var(--text); }
-  [data-theme="dark"] .add-column-btn { background: rgba(255,255,255,.04); }
-  [data-theme="dark"] .add-column-btn:hover { background: rgba(255,255,255,.08); }
+    body {
+      margin: 0;
+      font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 14px;
+      line-height: 1.45;
+      -webkit-font-smoothing: antialiased;
+      overscroll-behavior: none;
+    }
 
-  .compose {
-    background: var(--surface); border: 1px solid var(--primary); border-radius: var(--radius-sm);
-    margin: 4px 8px 8px; padding: 8px;
-  }
-  .compose textarea { border: none; padding: 6px; min-height: 58px; }
-  .compose textarea:focus { box-shadow: none; }
-  .compose-row { display: flex; gap: 6px; margin-top: 6px; }
+    button,
+    input,
+    textarea,
+    select {
+      font: inherit;
+      color: inherit;
+    }
 
-  /* ------- Modal ------- */
-  .modal-back {
-    position: fixed; inset: 0; background: rgba(7,11,27,.55);
-    display: grid; place-items: center; padding: 20px; z-index: 50;
-    animation: fade .15s ease;
-  }
-  @keyframes fade { from { opacity: 0 } to { opacity: 1 } }
-  .modal {
-    background: var(--surface); border-radius: 14px;
-    width: 100%; max-width: 640px; max-height: 86vh; overflow: auto;
-    box-shadow: var(--shadow-lg); animation: pop .18s ease;
-  }
-  @keyframes pop { from { transform: scale(.96); opacity: 0 } to { transform: scale(1); opacity: 1 } }
-  .modal-head { display: flex; align-items: flex-start; gap: 12px; padding: 18px 20px 8px; }
-  .modal-head h3 {
-    margin: 0; font-size: 18px; letter-spacing: -.01em; flex: 1;
-    padding: 4px 6px; border-radius: 6px;
-  }
-  .modal-head h3[contenteditable="true"] { background: var(--surface-2); box-shadow: 0 0 0 2px var(--primary-soft); }
-  .modal-body { padding: 4px 20px 18px; display: grid; gap: 16px; }
-  .modal-body h4 { margin: 0 0 6px; font-size: 12.5px; color: var(--text-dim); font-weight: 600; letter-spacing: .04em; text-transform: uppercase; }
-  .label-pick { display: flex; flex-wrap: wrap; gap: 6px; }
-  .label-pick button {
-    height: 22px; padding: 0 10px; border-radius: 99px;
-    color: #fff; font-size: 11.5px; font-weight: 600;
-    opacity: .55; transition: opacity .15s, transform .05s;
-  }
-  .label-pick button.on { opacity: 1; box-shadow: 0 0 0 2px var(--surface), 0 0 0 4px currentColor; }
-  .member-pick { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
-  .member-pick .avatar { cursor: pointer; opacity: .55; transition: opacity .15s; }
-  .member-pick .avatar.on { opacity: 1; outline: 2px solid var(--primary); outline-offset: 1px; }
-  .activity { display: flex; flex-direction: column; gap: 6px; font-size: 12.5px; color: var(--text-dim); }
-  .activity .dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--primary); margin-right: 8px; vertical-align: middle; }
-  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    button {
+      cursor: pointer;
+      border: none;
+      background: none;
+    }
 
-  /* ------- SortableJS visuals ------- */
-  .sortable-ghost { opacity: 0; }
-  .sortable-chosen { cursor: grabbing; }
-  .sortable-drag { transform: rotate(2deg); box-shadow: var(--shadow-lg) !important; }
-  .col-ghost { opacity: .3; }
+    a {
+      color: var(--primary);
+      text-decoration: none;
+    }
 
-  /* ------- Empty state ------- */
-  .empty {
-    margin: auto; text-align: center; color: var(--text-dim);
-    padding: 40px 24px;
-  }
-  .empty h2 { color: var(--text); margin-bottom: 8px; }
+    input,
+    textarea,
+    select {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-radius: var(--radius-sm);
+      padding: 9px 11px;
+      outline: none;
+      transition: border-color .15s, box-shadow .15s;
+      width: 100%;
+    }
 
-  /* ------- Toast ------- */
-  .toast {
-    position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
-    background: var(--text); color: var(--surface);
-    padding: 10px 16px; border-radius: 8px; font-size: 13px; font-weight: 500;
-    box-shadow: var(--shadow-lg); z-index: 100;
-    animation: toast .25s ease;
-    display: inline-flex; align-items: center; gap: 12px;
-  }
-  .toast button { color: var(--primary); font-weight: 700; padding: 2px 6px; }
-  @keyframes toast { from { opacity: 0; transform: translate(-50%, 10px) } to { opacity: 1; transform: translate(-50%, 0) } }
+    input:focus,
+    textarea:focus,
+    select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-soft);
+    }
 
-  /* ------- Filter bar ------- */
-  .filter-bar {
-    display: flex; align-items: center; gap: 8px; padding: 8px 18px;
-    background: var(--surface); border-bottom: 1px solid var(--border);
-    overflow-x: auto; white-space: nowrap; flex: 0 0 auto;
-  }
-  .filter-bar .f-label { font-size: 12px; color: var(--text-dim); font-weight: 600; }
-  .f-chip {
-    display: inline-flex; align-items: center; gap: 5px;
-    padding: 3px 10px; border-radius: 99px; font-size: 12px; font-weight: 600;
-    color: #fff; opacity: .4; transition: opacity .15s, transform .05s;
-  }
-  .f-chip.on { opacity: 1; box-shadow: 0 0 0 2px var(--surface), 0 0 0 4px currentColor; }
-  .f-clear { color: var(--text-dim); font-size: 12px; padding: 3px 8px; border-radius: 6px; }
-  .f-clear:hover { background: var(--surface-2); color: var(--text); }
+    textarea {
+      resize: vertical;
+      min-height: 80px;
+      font-family: inherit;
+    }
 
-  /* ------- Checklist ------- */
-  .checklist { display: flex; flex-direction: column; gap: 4px; }
-  .cl-item {
-    display: flex; align-items: center; gap: 8px; padding: 4px 6px; border-radius: 6px;
-  }
-  .cl-item:hover { background: var(--surface-2); }
-  .cl-item input[type="checkbox"] { width: 16px; height: 16px; margin: 0; flex-shrink: 0; accent-color: var(--primary); }
-  .cl-item input[type="text"] { border: none; padding: 2px 0; background: transparent; }
-  .cl-item input[type="text"]:focus { box-shadow: none; }
-  .cl-item.done input[type="text"] { text-decoration: line-through; color: var(--text-mute); }
-  .cl-item button { color: var(--text-mute); padding: 2px 6px; opacity: 0; }
-  .cl-item:hover button { opacity: 1; }
-  .progress-bar {
-    height: 4px; background: var(--border); border-radius: 99px; overflow: hidden; margin-top: 6px;
-  }
-  .progress-bar > span { display: block; height: 100%; background: var(--success); transition: width .2s; }
-  .progress-bar.full > span { background: var(--success); }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      border-radius: var(--radius-sm);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-weight: 500;
+      transition: background .15s, border-color .15s, transform .05s;
+    }
 
-  /* ------- Shortcut help ------- */
-  .help-grid { display: grid; grid-template-columns: auto 1fr; gap: 8px 14px; align-items: center; font-size: 13px; }
-  kbd {
-    display: inline-block; padding: 2px 8px; font-size: 11.5px; font-family: ui-monospace, Menlo, monospace;
-    background: var(--surface-2); border: 1px solid var(--border); border-bottom-width: 2px;
-    border-radius: 5px; color: var(--text);
-  }
+    .btn:hover {
+      background: var(--surface-2);
+    }
 
-  /* ------- Scrollbars ------- */
-  ::-webkit-scrollbar { width: 10px; height: 10px; }
-  ::-webkit-scrollbar-thumb { background: color-mix(in oklab, var(--text-mute) 30%, transparent); border-radius: 10px; }
-  ::-webkit-scrollbar-thumb:hover { background: color-mix(in oklab, var(--text-mute) 55%, transparent); }
-  ::-webkit-scrollbar-track { background: transparent; }
+    .btn:active {
+      transform: translateY(1px);
+    }
 
-  /* ------- Responsive ------- */
-  @media (max-width: 720px) {
-    .topbar { padding: 0 12px; gap: 8px; }
-    .search input { width: 140px; }
-    .board-switch { max-width: 42vw; }
-    .board-switch select { max-width: 32vw; }
-    .board-wrap { padding: 12px; gap: 10px; scroll-snap-type: x mandatory; }
-    .column, .add-column-btn { flex-basis: 86vw; scroll-snap-align: start; }
-    .two { grid-template-columns: 1fr; }
-    .modal { max-height: 94vh; }
-    .btn .txt { display: none; }
-    .btn.primary .txt, .board-switch .txt { display: inline; }
-  }
-  @media (max-width: 420px) {
-    .search input { width: 110px; }
-  }
-</style>
+    .btn.primary {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+    }
+
+    .btn.primary:hover {
+      background: var(--primary-600);
+      border-color: var(--primary-600);
+    }
+
+    .btn.danger {
+      color: var(--danger);
+    }
+
+    .btn.danger:hover {
+      background: rgba(239, 68, 68, .08);
+    }
+
+    .btn.ghost {
+      background: transparent;
+      border-color: transparent;
+    }
+
+    .btn.ghost:hover {
+      background: var(--surface-2);
+    }
+
+    .btn.sm {
+      padding: 5px 10px;
+      font-size: 12.5px;
+    }
+
+    .btn.icon {
+      padding: 7px;
+      width: 32px;
+      height: 32px;
+      justify-content: center;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 11.5px;
+      background: var(--primary-soft);
+      color: var(--primary-600);
+      font-weight: 600;
+    }
+
+    /* ------- Auth screen ------- */
+    .auth-wrap {
+      min-height: 100dvh;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      background: radial-gradient(1200px 600px at 10% -10%, rgba(99, 102, 241, .25), transparent 60%),
+        radial-gradient(900px 500px at 110% 110%, rgba(16, 185, 129, .18), transparent 60%),
+        var(--bg);
+    }
+
+    .auth-card {
+      width: 100%;
+      max-width: 420px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .brand-mark {
+      width: 34px;
+      height: 34px;
+      border-radius: 9px;
+      background: linear-gradient(135deg, #6366f1, #22d3ee);
+      display: grid;
+      place-items: center;
+      color: white;
+      font-weight: 800;
+      box-shadow: 0 6px 18px rgba(99, 102, 241, .45);
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: 20px;
+      letter-spacing: -0.01em;
+    }
+
+    .auth-card h2 {
+      margin: 8px 0 4px;
+      font-size: 22px;
+      letter-spacing: -.01em;
+    }
+
+    .auth-card p.sub {
+      color: var(--text-dim);
+      margin: 0 0 18px;
+    }
+
+    .field {
+      margin-bottom: 12px;
+    }
+
+    .field label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 12.5px;
+      color: var(--text-dim);
+      font-weight: 500;
+    }
+
+    .auth-card .btn.primary {
+      width: 100%;
+      justify-content: center;
+      padding: 11px;
+    }
+
+    .auth-switch {
+      text-align: center;
+      margin-top: 16px;
+      color: var(--text-dim);
+      font-size: 13px;
+    }
+
+    .auth-switch button {
+      color: var(--primary);
+      font-weight: 600;
+      padding: 2px 4px;
+    }
+
+    .err {
+      color: var(--danger);
+      font-size: 12.5px;
+      margin-top: 6px;
+      min-height: 16px;
+    }
+
+    /* ------- App shell ------- */
+    .app {
+      display: flex;
+      flex-direction: column;
+      height: 100dvh;
+      overflow: hidden;
+    }
+
+    .topbar {
+      height: 56px;
+      flex: 0 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 0 18px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      z-index: 20;
+    }
+
+    .topbar .spacer {
+      flex: 1;
+    }
+
+    .board-switch {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font-weight: 600;
+      max-width: 44vw;
+    }
+
+    .board-switch select {
+      background: transparent;
+      border: none;
+      padding: 0;
+      width: auto;
+      font-weight: 600;
+      max-width: 36vw;
+      text-overflow: ellipsis;
+    }
+
+    .board-switch select:focus {
+      box-shadow: none;
+    }
+
+    .search {
+      position: relative;
+    }
+
+    .search input {
+      width: 220px;
+      padding-left: 32px;
+    }
+
+    .search svg {
+      position: absolute;
+      left: 9px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-mute);
+    }
+
+    .avatar {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      color: #fff;
+      font-weight: 700;
+      font-size: 12px;
+      flex-shrink: 0;
+      box-shadow: inset 0 0 0 2px var(--surface);
+    }
+
+    .user-menu {
+      position: relative;
+    }
+
+    .dropdown {
+      position: absolute;
+      right: 0;
+      top: calc(100% + 6px);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      min-width: 200px;
+      box-shadow: var(--shadow-lg);
+      padding: 6px;
+      z-index: 40;
+    }
+
+    .dropdown button {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+      padding: 8px 10px;
+      border-radius: 6px;
+      text-align: left;
+    }
+
+    .dropdown button:hover {
+      background: var(--surface-2);
+    }
+
+    .hr {
+      height: 1px;
+      background: var(--border);
+      margin: 4px 0;
+    }
+
+    /* ------- Board ------- */
+    .board-wrap {
+      flex: 1;
+      overflow-x: auto;
+      overflow-y: hidden;
+      padding: 18px;
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      scroll-padding: 18px;
+    }
+
+    .column {
+      flex: 0 0 300px;
+      max-height: 100%;
+      background: var(--col-bg);
+      border-radius: var(--radius);
+      display: flex;
+      flex-direction: column;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .col-head {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 12px 8px;
+      cursor: grab;
+    }
+
+    .col-head:active {
+      cursor: grabbing;
+    }
+
+    .col-title {
+      flex: 1;
+      font-weight: 650;
+      letter-spacing: -.005em;
+      padding: 4px 6px;
+      border-radius: 6px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .col-title:hover {
+      background: rgba(0, 0, 0, .04);
+    }
+
+    [data-theme="dark"] .col-title:hover {
+      background: rgba(255, 255, 255, .06);
+    }
+
+    .col-title[contenteditable="true"] {
+      background: var(--surface);
+      box-shadow: 0 0 0 2px var(--primary-soft);
+    }
+
+    .col-count {
+      font-size: 11.5px;
+      color: var(--text-dim);
+      padding: 0 6px;
+      font-weight: 600;
+    }
+
+    .col-menu {
+      opacity: 0;
+      transition: opacity .15s;
+    }
+
+    .column:hover .col-menu {
+      opacity: 1;
+    }
+
+    .cards {
+      flex: 1;
+      overflow-y: auto;
+      padding: 4px 8px 8px;
+      min-height: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .card {
+      background: var(--surface);
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border);
+      cursor: grab;
+      position: relative;
+      transition: box-shadow .15s, transform .05s, border-color .15s;
+      word-break: break-word;
+    }
+
+    .card:hover {
+      box-shadow: var(--shadow);
+      border-color: color-mix(in oklab, var(--primary) 40%, var(--border));
+    }
+
+    .card:active {
+      cursor: grabbing;
+    }
+
+    .card-labels {
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+      margin-bottom: 6px;
+    }
+
+    .lbl {
+      height: 6px;
+      min-width: 32px;
+      border-radius: 99px;
+    }
+
+    .card-title {
+      font-weight: 500;
+      line-height: 1.35;
+    }
+
+    .card-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 8px;
+      flex-wrap: wrap;
+      color: var(--text-dim);
+      font-size: 11.5px;
+    }
+
+    .meta-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .meta-badge svg {
+      width: 12px;
+      height: 12px;
+    }
+
+    .due {
+      padding: 1px 6px;
+      border-radius: 4px;
+      background: var(--surface-2);
+    }
+
+    .due.soon {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .due.over {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    [data-theme="dark"] .due.soon {
+      background: #3a2d0c;
+      color: #fbbf24;
+    }
+
+    [data-theme="dark"] .due.over {
+      background: #3a1414;
+      color: #fca5a5;
+    }
+
+    .card-assignees {
+      margin-left: auto;
+      display: flex;
+    }
+
+    .card-assignees .avatar {
+      width: 22px;
+      height: 22px;
+      font-size: 10.5px;
+      margin-left: -6px;
+    }
+
+    .add-card,
+    .add-col {
+      margin: 4px 8px 10px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      color: var(--text-dim);
+      font-weight: 500;
+      text-align: left;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: background .15s, color .15s;
+    }
+
+    .add-card:hover,
+    .add-col:hover {
+      background: rgba(0, 0, 0, .05);
+      color: var(--text);
+    }
+
+    [data-theme="dark"] .add-card:hover,
+    [data-theme="dark"] .add-col:hover {
+      background: rgba(255, 255, 255, .05);
+    }
+
+    .add-column-btn {
+      flex: 0 0 300px;
+      align-self: flex-start;
+      padding: 12px;
+      border-radius: var(--radius);
+      background: rgba(0, 0, 0, .04);
+      color: var(--text-dim);
+      font-weight: 500;
+      text-align: left;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .add-column-btn:hover {
+      background: rgba(0, 0, 0, .07);
+      color: var(--text);
+    }
+
+    [data-theme="dark"] .add-column-btn {
+      background: rgba(255, 255, 255, .04);
+    }
+
+    [data-theme="dark"] .add-column-btn:hover {
+      background: rgba(255, 255, 255, .08);
+    }
+
+    .compose {
+      background: var(--surface);
+      border: 1px solid var(--primary);
+      border-radius: var(--radius-sm);
+      margin: 4px 8px 8px;
+      padding: 8px;
+    }
+
+    .compose textarea {
+      border: none;
+      padding: 6px;
+      min-height: 58px;
+    }
+
+    .compose textarea:focus {
+      box-shadow: none;
+    }
+
+    .compose-row {
+      display: flex;
+      gap: 6px;
+      margin-top: 6px;
+    }
+
+    /* ------- Modal ------- */
+    .modal-back {
+      position: fixed;
+      inset: 0;
+      background: rgba(7, 11, 27, .55);
+      display: grid;
+      place-items: center;
+      padding: 20px;
+      z-index: 50;
+      animation: fade .15s ease;
+    }
+
+    @keyframes fade {
+      from {
+        opacity: 0
+      }
+
+      to {
+        opacity: 1
+      }
+    }
+
+    .modal {
+      background: var(--surface);
+      border-radius: 14px;
+      width: 100%;
+      max-width: 640px;
+      max-height: 86vh;
+      overflow: auto;
+      box-shadow: var(--shadow-lg);
+      animation: pop .18s ease;
+    }
+
+    @keyframes pop {
+      from {
+        transform: scale(.96);
+        opacity: 0
+      }
+
+      to {
+        transform: scale(1);
+        opacity: 1
+      }
+    }
+
+    .modal-head {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 18px 20px 8px;
+    }
+
+    .modal-head h3 {
+      margin: 0;
+      font-size: 18px;
+      letter-spacing: -.01em;
+      flex: 1;
+      padding: 4px 6px;
+      border-radius: 6px;
+    }
+
+    .modal-head h3[contenteditable="true"] {
+      background: var(--surface-2);
+      box-shadow: 0 0 0 2px var(--primary-soft);
+    }
+
+    .modal-body {
+      padding: 4px 20px 18px;
+      display: grid;
+      gap: 16px;
+    }
+
+    .modal-body h4 {
+      margin: 0 0 6px;
+      font-size: 12.5px;
+      color: var(--text-dim);
+      font-weight: 600;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+
+    .label-pick {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .label-pick button {
+      height: 22px;
+      padding: 0 10px;
+      border-radius: 99px;
+      color: #fff;
+      font-size: 11.5px;
+      font-weight: 600;
+      opacity: .55;
+      transition: opacity .15s, transform .05s;
+    }
+
+    .label-pick button.on {
+      opacity: 1;
+      box-shadow: 0 0 0 2px var(--surface), 0 0 0 4px currentColor;
+    }
+
+    .member-pick {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .member-pick .avatar {
+      cursor: pointer;
+      opacity: .55;
+      transition: opacity .15s;
+    }
+
+    .member-pick .avatar.on {
+      opacity: 1;
+      outline: 2px solid var(--primary);
+      outline-offset: 1px;
+    }
+
+    .activity {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 12.5px;
+      color: var(--text-dim);
+    }
+
+    .activity .dot {
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--primary);
+      margin-right: 8px;
+      vertical-align: middle;
+    }
+
+    .two {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    /* ------- SortableJS visuals ------- */
+    .sortable-ghost {
+      opacity: 0;
+    }
+
+    .sortable-chosen {
+      cursor: grabbing;
+    }
+
+    .sortable-drag {
+      transform: rotate(2deg);
+      box-shadow: var(--shadow-lg) !important;
+    }
+
+    .col-ghost {
+      opacity: .3;
+    }
+
+    /* ------- Empty state ------- */
+    .empty {
+      margin: auto;
+      text-align: center;
+      color: var(--text-dim);
+      padding: 40px 24px;
+    }
+
+    .empty h2 {
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+
+    /* ------- Toast ------- */
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--text);
+      color: var(--surface);
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      box-shadow: var(--shadow-lg);
+      z-index: 100;
+      animation: toast .25s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .toast button {
+      color: var(--primary);
+      font-weight: 700;
+      padding: 2px 6px;
+    }
+
+    @keyframes toast {
+      from {
+        opacity: 0;
+        transform: translate(-50%, 10px)
+      }
+
+      to {
+        opacity: 1;
+        transform: translate(-50%, 0)
+      }
+    }
+
+    /* ------- Filter bar ------- */
+    .filter-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 18px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      overflow-x: auto;
+      white-space: nowrap;
+      flex: 0 0 auto;
+    }
+
+    .filter-bar .f-label {
+      font-size: 12px;
+      color: var(--text-dim);
+      font-weight: 600;
+    }
+
+    .f-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 10px;
+      border-radius: 99px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #fff;
+      opacity: .4;
+      transition: opacity .15s, transform .05s;
+    }
+
+    .f-chip.on {
+      opacity: 1;
+      box-shadow: 0 0 0 2px var(--surface), 0 0 0 4px currentColor;
+    }
+
+    .f-clear {
+      color: var(--text-dim);
+      font-size: 12px;
+      padding: 3px 8px;
+      border-radius: 6px;
+    }
+
+    .f-clear:hover {
+      background: var(--surface-2);
+      color: var(--text);
+    }
+
+    /* ------- Checklist ------- */
+    .checklist {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .cl-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 6px;
+      border-radius: 6px;
+    }
+
+    .cl-item:hover {
+      background: var(--surface-2);
+    }
+
+    .cl-item input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      margin: 0;
+      flex-shrink: 0;
+      accent-color: var(--primary);
+    }
+
+    .cl-item input[type="text"] {
+      border: none;
+      padding: 2px 0;
+      background: transparent;
+    }
+
+    .cl-item input[type="text"]:focus {
+      box-shadow: none;
+    }
+
+    .cl-item.done input[type="text"] {
+      text-decoration: line-through;
+      color: var(--text-mute);
+    }
+
+    .cl-item button {
+      color: var(--text-mute);
+      padding: 2px 6px;
+      opacity: 0;
+    }
+
+    .cl-item:hover button {
+      opacity: 1;
+    }
+
+    .progress-bar {
+      height: 4px;
+      background: var(--border);
+      border-radius: 99px;
+      overflow: hidden;
+      margin-top: 6px;
+    }
+
+    .progress-bar>span {
+      display: block;
+      height: 100%;
+      background: var(--success);
+      transition: width .2s;
+    }
+
+    .progress-bar.full>span {
+      background: var(--success);
+    }
+
+    /* ------- Shortcut help ------- */
+    .help-grid {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 8px 14px;
+      align-items: center;
+      font-size: 13px;
+    }
+
+    kbd {
+      display: inline-block;
+      padding: 2px 8px;
+      font-size: 11.5px;
+      font-family: ui-monospace, Menlo, monospace;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-bottom-width: 2px;
+      border-radius: 5px;
+      color: var(--text);
+    }
+
+    /* ------- Scrollbars ------- */
+    ::-webkit-scrollbar {
+      width: 10px;
+      height: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: color-mix(in oklab, var(--text-mute) 30%, transparent);
+      border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: color-mix(in oklab, var(--text-mute) 55%, transparent);
+    }
+
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    /* ------- Responsive ------- */
+    @media (max-width: 720px) {
+      .topbar {
+        padding: 0 12px;
+        gap: 8px;
+      }
+
+      .search input {
+        width: 140px;
+      }
+
+      .board-switch {
+        max-width: 42vw;
+      }
+
+      .board-switch select {
+        max-width: 32vw;
+      }
+
+      .board-wrap {
+        padding: 12px;
+        gap: 10px;
+        scroll-snap-type: x mandatory;
+      }
+
+      .column,
+      .add-column-btn {
+        flex-basis: 86vw;
+        scroll-snap-align: start;
+      }
+
+      .two {
+        grid-template-columns: 1fr;
+      }
+
+      .modal {
+        max-height: 94vh;
+      }
+
+      .btn .txt {
+        display: none;
+      }
+
+      .btn.primary .txt,
+      .board-switch .txt {
+        display: inline;
+      }
+    }
+
+    @media (max-width: 420px) {
+      .search input {
+        width: 110px;
+      }
+    }
+
+    /* ------- UI Overhaul additions ------- */
+    .auth-wrap {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .orb-1,
+    .orb-2 {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(60px);
+      opacity: 0.6;
+      animation: float 10s infinite ease-in-out;
+    }
+
+    .orb-1 {
+      width: 300px;
+      height: 300px;
+      background: var(--primary);
+      top: -100px;
+      left: -100px;
+    }
+
+    .orb-2 {
+      width: 400px;
+      height: 400px;
+      background: #10b981;
+      bottom: -150px;
+      right: -100px;
+      animation-delay: -5s;
+    }
+
+    @keyframes float {
+
+      0%,
+      100% {
+        transform: translate(0, 0);
+      }
+
+      50% {
+        transform: translate(30px, 40px);
+      }
+    }
+
+    .auth-card {
+      position: relative;
+      z-index: 10;
+      backdrop-filter: blur(20px);
+      background: rgba(255, 255, 255, 0.85);
+    }
+
+    [data-theme="dark"] .auth-card {
+      background: rgba(15, 23, 41, 0.7);
+    }
+
+    .topbar {
+      backdrop-filter: blur(12px);
+      background: rgba(255, 255, 255, 0.85);
+    }
+
+    [data-theme="dark"] .topbar {
+      background: rgba(15, 23, 41, 0.7);
+      border-bottom-color: rgba(255, 255, 255, 0.05);
+    }
+
+    .board-wrap {
+      background-image: radial-gradient(var(--text-mute) 1px, transparent 1px);
+      background-size: 20px 20px;
+    }
+
+    .column {
+      position: relative;
+    }
+
+    .column::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #6366f1, #06b6d4);
+      border-top-left-radius: var(--radius);
+      border-top-right-radius: var(--radius);
+      z-index: 10;
+    }
+
+    .card {
+      position: relative;
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      left: -1px;
+      top: -1px;
+      bottom: -1px;
+      width: 4px;
+      border-top-left-radius: var(--radius-sm);
+      border-bottom-left-radius: var(--radius-sm);
+      background: var(--primary);
+      transform: scaleY(0);
+      transition: transform 0.2s ease;
+      transform-origin: center;
+    }
+
+    .card:hover::before {
+      transform: scaleY(1);
+    }
+
+    .card:hover {
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+      transform: translateY(-2px);
+      border-color: var(--primary-soft);
+    }
+
+    .sortable-ghost {
+      opacity: 0.4;
+      border: 2px dashed var(--primary) !important;
+      background: var(--primary-soft) !important;
+    }
+
+    .sortable-drag {
+      transform: rotate(3deg) scale(1.02) !important;
+      box-shadow: 0 20px 40px rgba(99, 102, 241, 0.2) !important;
+      z-index: 100;
+      border-color: var(--primary) !important;
+    }
+
+    .empty-board {
+      margin: auto;
+      text-align: center;
+      color: var(--text-dim);
+      padding: 40px;
+    }
+
+    .empty-col {
+      text-align: center;
+      color: var(--text-mute);
+      font-size: 12.5px;
+      padding: 16px 0;
+      border: 1px dashed var(--border);
+      border-radius: var(--radius-sm);
+      margin-bottom: 8px;
+    }
+
+    .toast {
+      border-left: 4px solid var(--primary);
+      border-radius: 8px;
+      animation: toastIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    @keyframes toastIn {
+      from {
+        opacity: 0;
+        transform: translate(-50%, 20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+      }
+    }
+
+    /* Custom Modals */
+    .custom-modal-back {
+      position: fixed;
+      inset: 0;
+      background: rgba(7, 11, 27, .55);
+      display: grid;
+      place-items: center;
+      padding: 20px;
+      z-index: 9999;
+      backdrop-filter: blur(4px);
+      animation: fade .15s ease;
+    }
+
+    .custom-modal {
+      background: var(--surface);
+      border-radius: 14px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: var(--shadow-lg);
+      animation: pop .18s ease;
+      padding: 24px;
+      border: 1px solid var(--border);
+    }
+
+    .custom-modal h3 {
+      margin: 0 0 12px;
+      font-size: 18px;
+      letter-spacing: -0.01em;
+    }
+
+    .custom-modal p {
+      margin: 0 0 16px;
+      color: var(--text-dim);
+      font-size: 14px;
+    }
+
+    .custom-modal input {
+      margin-bottom: 16px;
+    }
+
+    .custom-modal .btns {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+  </style>
 </head>
+
 <body>
 
-<div id="auth" class="auth-wrap" style="display:none">
-  <div class="auth-card">
-    <div class="brand">
-      <div class="brand-mark">T</div>
-      <h1>TaskFlow</h1>
-    </div>
-    <h2 id="authTitle">Tekrar hoşgeldin</h2>
-    <p class="sub" id="authSub">Hesabına giriş yap ve kaldığın yerden devam et.</p>
-    <form id="authForm">
-      <div class="field" id="nameField" style="display:none">
-        <label>İsim</label>
-        <input type="text" id="authName" autocomplete="name" />
+  <div id="auth" class="auth-wrap" style="display:none">
+    <div class="orb-1"></div>
+    <div class="orb-2"></div>
+    <div class="auth-card">
+      <div class="brand">
+        <div class="brand-mark">T</div>
+        <h1>TaskFlow</h1>
       </div>
-      <div class="field">
-        <label>E-posta</label>
-        <input type="email" id="authEmail" autocomplete="email" required />
-      </div>
-      <div class="field">
-        <label>Şifre</label>
-        <input type="password" id="authPass" autocomplete="current-password" minlength="6" required />
-      </div>
-      <div class="err" id="authErr"></div>
-      <button class="btn primary" type="submit" id="authBtn">Giriş yap</button>
-    </form>
-    <div class="auth-switch">
-      <span id="switchText">Hesabın yok mu?</span>
-      <button type="button" id="switchBtn">Kayıt ol</button>
-    </div>
-  </div>
-</div>
-
-<div id="app" class="app" style="display:none">
-  <div class="topbar">
-    <div class="brand" style="margin:0">
-      <div class="brand-mark">T</div>
-      <h1 style="font-size:16px">TaskFlow</h1>
-    </div>
-    <div class="board-switch">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="7" height="16" rx="1.5"/><rect x="14" y="4" width="7" height="10" rx="1.5"/></svg>
-      <select id="boardSelect"></select>
-      <button class="btn ghost sm" id="newBoardBtn" title="Yeni board">＋</button>
-      <button class="btn ghost sm" id="renameBoardBtn" title="Board adını düzenle">✎</button>
-      <button class="btn ghost sm danger" id="deleteBoardBtn" title="Board'u sil">✕</button>
-    </div>
-    <div class="spacer"></div>
-    <div class="search">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-      <input id="searchInput" type="search" placeholder="Kartlarda ara…" />
-    </div>
-    <button class="btn icon ghost" id="helpBtn" title="Klavye kısayolları (?)" aria-label="Kısayollar">?</button>
-    <button class="btn icon ghost" id="themeBtn" title="Tema">🌙</button>
-    <div class="user-menu">
-      <button id="userBtn" class="avatar" style="background:#6366f1"></button>
-      <div class="dropdown" id="userDropdown" style="display:none">
-        <div style="padding:8px 10px">
-          <div style="font-weight:600" id="dropName"></div>
-          <div style="color:var(--text-dim); font-size:12px" id="dropEmail"></div>
+      <h2 id="authTitle">Tekrar hoşgeldin</h2>
+      <p class="sub" id="authSub">Hesabına giriş yap ve kaldığın yerden devam et.</p>
+      <form id="authForm">
+        <div class="field" id="nameField" style="display:none">
+          <label>İsim</label>
+          <input type="text" id="authName" autocomplete="name" />
         </div>
-        <div class="hr"></div>
-        <button id="exportBtn">📥 Veriyi dışa aktar</button>
-        <button id="importBtn">📤 Veriyi içe aktar</button>
-        <div class="hr"></div>
-        <button id="logoutBtn" class="danger">Çıkış yap</button>
+        <div class="field">
+          <label>E-posta</label>
+          <input type="email" id="authEmail" autocomplete="email" required />
+        </div>
+        <div class="field">
+          <label>Şifre</label>
+          <input type="password" id="authPass" autocomplete="current-password" minlength="6" required />
+        </div>
+        <div class="err" id="authErr"></div>
+        <button class="btn primary" type="submit" id="authBtn">Giriş yap</button>
+      </form>
+      <div class="auth-switch">
+        <span id="switchText">Hesabın yok mu?</span>
+        <button type="button" id="switchBtn">Kayıt ol</button>
       </div>
     </div>
   </div>
-  <div class="filter-bar" id="filterBar"></div>
-  <div id="boardWrap" class="board-wrap"></div>
-</div>
 
-<input type="file" id="importFile" accept="application/json" style="display:none" />
+  <div id="app" class="app" style="display:none">
+    <div class="topbar">
+      <div class="brand" style="margin:0">
+        <div class="brand-mark">T</div>
+        <h1 style="font-size:16px">TaskFlow</h1>
+      </div>
+      <div class="board-switch">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="4" width="7" height="16" rx="1.5" />
+          <rect x="14" y="4" width="7" height="10" rx="1.5" />
+        </svg>
+        <select id="boardSelect"></select>
+        <button class="btn ghost sm" id="newBoardBtn" title="Yeni board">＋</button>
+        <button class="btn ghost sm" id="renameBoardBtn" title="Board adını düzenle">✎</button>
+        <button class="btn ghost sm danger" id="deleteBoardBtn" title="Board'u sil">✕</button>
+      </div>
+      <div class="spacer"></div>
+      <div class="search">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="7" />
+          <path d="m20 20-3.5-3.5" />
+        </svg>
+        <input id="searchInput" type="search" placeholder="Kartlarda ara…" />
+      </div>
+      <button class="btn icon ghost" id="helpBtn" title="Klavye kısayolları (?)" aria-label="Kısayollar">?</button>
+      <button class="btn icon ghost" id="themeBtn" title="Tema">🌙</button>
+      <div class="user-menu">
+        <button id="userBtn" class="avatar" style="background:#6366f1"></button>
+        <div class="dropdown" id="userDropdown" style="display:none">
+          <div style="padding:8px 10px">
+            <div style="font-weight:600" id="dropName"></div>
+            <div style="color:var(--text-dim); font-size:12px" id="dropEmail"></div>
+          </div>
+          <div class="hr"></div>
+          <button id="exportBtn">📥 Veriyi dışa aktar</button>
+          <button id="importBtn">📤 Veriyi içe aktar</button>
+          <div class="hr"></div>
+          <button id="logoutBtn" class="danger">Çıkış yap</button>
+        </div>
+      </div>
+    </div>
+    <div class="filter-bar" id="filterBar"></div>
+    <div id="boardWrap" class="board-wrap"></div>
+  </div>
 
-<script>
-/* =========================================================
-   TaskFlow — single-file Kanban
-   - Auth: localStorage + PBKDF2 password hashing
-   - Data model: users, boards, columns, cards (in localStorage)
-   - Ordering: fractional indexing (midpoint between neighbors)
-     -> sıralama sayfa yenilemede korunur, sürüklemede O(1) güncelleme
-   - Drag & drop: SortableJS (mobilde delay ile uzun basma)
-   - Tek HTML dosyada, CDN dışında bağımlılık yok
-========================================================= */
+  <input type="file" id="importFile" accept="application/json" style="display:none" />
 
-// ---------- tiny utilities ----------
-const $  = (s, r=document) => r.querySelector(s);
-const $$ = (s, r=document) => [...r.querySelectorAll(s)];
-const uid = (p='') => p + Math.random().toString(36).slice(2,10) + Date.now().toString(36).slice(-3);
-const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const now = () => Date.now();
+  <script>
+    /* =========================================================
+       TaskFlow — single-file Kanban
+       - Auth: localStorage + PBKDF2 password hashing
+       - Data model: users, boards, columns, cards (in localStorage)
+       - Ordering: fractional indexing (midpoint between neighbors)
+         -> sıralama sayfa yenilemede korunur, sürüklemede O(1) güncelleme
+       - Drag & drop: SortableJS (mobilde delay ile uzun basma)
+       - Tek HTML dosyada, CDN dışında bağımlılık yok
+    ========================================================= */
 
-let _toastTimer = null;
-function toast(msg, opts) {
-  // opts: { undo: fn, duration }
-  document.querySelectorAll('.toast').forEach(x => x.remove());
-  clearTimeout(_toastTimer);
-  const t = document.createElement('div');
-  t.className = 'toast';
-  t.innerHTML = `<span>${esc(msg)}</span>`;
-  if (opts?.undo) {
-    const b = document.createElement('button');
-    b.textContent = 'Geri al';
-    b.onclick = () => { opts.undo(); t.remove(); };
-    t.appendChild(b);
-  }
-  document.body.appendChild(t);
-  _toastTimer = setTimeout(() => t.remove(), opts?.duration ?? 2600);
-}
 
-function avatarColor(seed='') {
-  let h = 0; for (const c of seed) h = (h*31 + c.charCodeAt(0)) >>> 0;
-  const palette = ['#6366f1','#10b981','#f59e0b','#ef4444','#06b6d4','#ec4899','#8b5cf6','#14b8a6'];
-  return palette[h % palette.length];
-}
-function initials(name='') {
-  return name.trim().split(/\s+/).slice(0,2).map(s => s[0]?.toUpperCase() ?? '').join('') || '?';
-}
+    // ---------- Custom Modals ----------
+    function showPromptModal({ title, label, placeholder, defaultValue, confirmText }) {
+      return new Promise(resolve => {
+        const back = document.createElement('div');
+        back.className = 'custom-modal-back';
+        back.innerHTML = `
+      <div class="custom-modal">
+        <h3>${esc(title)}</h3>
+        ${label ? `<p>${esc(label)}</p>` : ''}
+        <input type="text" placeholder="${esc(placeholder || '')}" value="${esc(defaultValue || '')}" />
+        <div class="btns">
+          <button class="btn ghost" data-cancel>İptal</button>
+          <button class="btn primary" data-confirm>${esc(confirmText || 'Tamam')}</button>
+        </div>
+      </div>
+    `;
+        document.body.appendChild(back);
+        const input = back.querySelector('input');
+        input.focus();
+        input.select();
 
-// ---------- password hashing (PBKDF2) ----------
-async function hashPassword(password, saltB64) {
-  const enc = new TextEncoder();
-  const salt = saltB64
-    ? Uint8Array.from(atob(saltB64), c => c.charCodeAt(0))
-    : crypto.getRandomValues(new Uint8Array(16));
-  const key = await crypto.subtle.importKey('raw', enc.encode(password), {name:'PBKDF2'}, false, ['deriveBits']);
-  const bits = await crypto.subtle.deriveBits(
-    { name:'PBKDF2', salt, iterations: 120000, hash:'SHA-256' }, key, 256);
-  const hashB64 = btoa(String.fromCharCode(...new Uint8Array(bits)));
-  const sB64 = btoa(String.fromCharCode(...salt));
-  return { hash: hashB64, salt: sB64 };
-}
-
-// ---------- fractional indexing ----------
-// Her sıra için string tabanlı key üretiriz; iki komşu arasına yeni bir key üretmek
-// tüm listeyi yeniden numaralamaya gerek bırakmaz. Basit base-62 implementasyonu.
-const BASE = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-const B = BASE.length;
-function keyBetween(a, b) {
-  // a < b, her ikisi de null olabilir
-  a = a ?? ""; b = b ?? "";
-  let i = 0, result = "";
-  while (true) {
-    const ac = i < a.length ? BASE.indexOf(a[i]) : 0;
-    const bc = i < b.length ? BASE.indexOf(b[i]) : B;
-    if (ac === bc) { result += BASE[ac]; i++; continue; }
-    if (bc - ac > 1) { const mid = Math.floor((ac+bc)/2); return result + BASE[mid]; }
-    // bc - ac === 1 -> a'dan devam et, sona bir karakter ekleyeceğiz
-    result += BASE[ac]; i++;
-    while (true) {
-      const ac2 = i < a.length ? BASE.indexOf(a[i]) : 0;
-      if (ac2 < B - 1) { return result + BASE[Math.floor((ac2 + B) / 2)]; }
-      result += BASE[ac2]; i++;
-    }
-  }
-}
-
-// ---------- storage ----------
-const K = {
-  users:   'tf.users',    // { [email]: {name, salt, hash, createdAt} }
-  session: 'tf.session',  // email
-  data:    'tf.data',     // { boards:[], columns:[], cards:[] }  (per-user under tf.data.<email>)
-  theme:   'tf.theme'
-};
-const getJSON = (k, d) => { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch { return d; } };
-const setJSON = (k, v) => localStorage.setItem(k, JSON.stringify(v));
-
-function dataKey(email) { return K.data + '.' + email; }
-function loadData() { return getJSON(dataKey(state.user.email), { boards:[], columns:[], cards:[] }); }
-function saveData(silent)  { setJSON(dataKey(state.user.email), state.data); if (!silent) broadcast('data'); }
-
-// ---------- state ----------
-const state = {
-  user: null,          // {email, name}
-  data: null,          // {boards, columns, cards}
-  boardId: null,
-  editingCardId: null,
-  search: '',
-  labelFilter: new Set(), // filter by labels (AND -> kart tüm seçilenleri taşımalı)
-};
-
-// ---------- cross-tab sync (BroadcastChannel) ----------
-let bc = null;
-try { bc = new BroadcastChannel('taskflow'); } catch { /* old browsers */ }
-function broadcast(kind) { if (bc && state.user) bc.postMessage({ kind, email: state.user.email, t: Date.now() }); }
-if (bc) bc.onmessage = (e) => {
-  if (!state.user || e.data?.email !== state.user.email) return;
-  // another tab updated this user's data -> reload from storage, preserve UI state
-  state.data = loadData();
-  renderBoardSelect();
-  if (!state.data.boards.find(b => b.id === state.boardId)) state.boardId = state.data.boards[0]?.id;
-  renderBoard();
-  toast('Başka bir sekmede güncellendi');
-};
-
-const LABELS = [
-  { id:'red',    color:'#ef4444', name:'Acil' },
-  { id:'orange', color:'#f59e0b', name:'Önemli' },
-  { id:'green',  color:'#10b981', name:'Hazır' },
-  { id:'blue',   color:'#3b82f6', name:'İnceleme' },
-  { id:'purple', color:'#8b5cf6', name:'Tasarım' },
-  { id:'gray',   color:'#64748b', name:'Notlar' },
-];
-const labelById = id => LABELS.find(l => l.id === id);
-
-// ---------- AUTH ----------
-const authEl = $('#auth'), appEl = $('#app');
-let authMode = 'login';
-
-function showAuth() {
-  appEl.style.display = 'none';
-  authEl.style.display = '';
-  $('#authErr').textContent = '';
-}
-function setAuthMode(mode) {
-  authMode = mode;
-  const login = mode === 'login';
-  $('#authTitle').textContent  = login ? 'Tekrar hoşgeldin' : 'Hesap oluştur';
-  $('#authSub').textContent    = login ? 'Hesabına giriş yap ve kaldığın yerden devam et.' : 'Saniyeler içinde board\'ını oluştur.';
-  $('#authBtn').textContent    = login ? 'Giriş yap' : 'Kayıt ol';
-  $('#switchText').textContent = login ? 'Hesabın yok mu?' : 'Hesabın var mı?';
-  $('#switchBtn').textContent  = login ? 'Kayıt ol' : 'Giriş yap';
-  $('#nameField').style.display = login ? 'none' : '';
-  $('#authPass').autocomplete = login ? 'current-password' : 'new-password';
-  $('#authErr').textContent = '';
-}
-$('#switchBtn').addEventListener('click', () => setAuthMode(authMode === 'login' ? 'register' : 'login'));
-
-$('#authForm').addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const email = $('#authEmail').value.trim().toLowerCase();
-  const pass  = $('#authPass').value;
-  const name  = $('#authName').value.trim();
-  const err = $('#authErr');
-  err.textContent = '';
-  if (!email || !pass || (authMode==='register' && !name)) { err.textContent = 'Tüm alanları doldur.'; return; }
-  const users = getJSON(K.users, {});
-  try {
-    if (authMode === 'register') {
-      if (users[email]) { err.textContent = 'Bu e-posta zaten kayıtlı.'; return; }
-      const { hash, salt } = await hashPassword(pass);
-      users[email] = { name, hash, salt, createdAt: now() };
-      setJSON(K.users, users);
-      setJSON(K.session, email);
-      await bootApp();
-    } else {
-      const u = users[email];
-      if (!u) { err.textContent = 'Kullanıcı bulunamadı.'; return; }
-      const { hash } = await hashPassword(pass, u.salt);
-      if (hash !== u.hash) { err.textContent = 'Şifre hatalı.'; return; }
-      setJSON(K.session, email);
-      await bootApp();
-    }
-  } catch (ex) {
-    console.error(ex);
-    err.textContent = 'Bir hata oluştu, tekrar dene.';
-  }
-});
-
-function logout() {
-  localStorage.removeItem(K.session);
-  state.user = null; state.data = null; state.boardId = null;
-  setAuthMode('login');
-  showAuth();
-}
-
-// ---------- APP BOOT ----------
-async function bootApp() {
-  const email = getJSON(K.session, null);
-  if (!email) { setAuthMode('login'); showAuth(); return; }
-  const users = getJSON(K.users, {});
-  const u = users[email];
-  if (!u) { logout(); return; }
-  state.user = { email, name: u.name };
-  state.data = loadData();
-  if (state.data.boards.length === 0) seedExampleBoard();
-  state.boardId = state.data.boards[0].id;
-
-  authEl.style.display = 'none';
-  appEl.style.display = '';
-  $('#userBtn').textContent = initials(state.user.name);
-  $('#userBtn').style.background = avatarColor(state.user.email);
-  $('#dropName').textContent = state.user.name;
-  $('#dropEmail').textContent = state.user.email;
-
-  renderBoardSelect();
-  renderBoard();
-}
-
-function seedExampleBoard() {
-  const bId = uid('b_');
-  state.data.boards.push({ id:bId, name:'İlk Board\'ım', createdAt: now() });
-  const cols = [
-    { name:'Yapılacaklar' },
-    { name:'Devam Ediyor' },
-    { name:'İncelemede' },
-    { name:'Tamamlandı' },
-  ];
-  let prev = null;
-  cols.forEach((c, i) => {
-    const colId = uid('c_');
-    const order = keyBetween(prev, null);
-    state.data.columns.push({ id: colId, boardId: bId, name: c.name, order });
-    prev = order;
-    if (i === 0) {
-      const samples = [
-        { title:'TaskFlow\'u keşfet', desc:'Kartları sürükle, yeni sütun ekle, detay için karta tıkla.', labels:['green'] },
-        { title:'Acil bug düzeltmesi', desc:'', labels:['red'], due: new Date(Date.now()+2*86400000).toISOString().slice(0,10) },
-        { title:'Tasarım incelemesi', desc:'', labels:['purple','blue'] },
-      ];
-      let pk = null;
-      samples.forEach(s => {
-        const k = keyBetween(pk, null);
-        state.data.cards.push({
-          id: uid('k_'), columnId: colId,
-          title: s.title, desc: s.desc || '',
-          labels: s.labels || [], due: s.due || '',
-          assignees: [state.user.email],
-          activity: [{ t: now(), text:'kart oluşturuldu' }],
-          order: k, createdAt: now()
-        });
-        pk = k;
+        const close = (val) => { back.remove(); resolve(val); };
+        back.querySelector('[data-cancel]').onclick = () => close(null);
+        back.querySelector('[data-confirm]').onclick = () => close(input.value);
+        input.onkeydown = (e) => {
+          if (e.key === 'Enter') close(input.value);
+          if (e.key === 'Escape') close(null);
+        };
       });
     }
-  });
-  saveData();
-}
 
-// ---------- RENDER: board select ----------
-function renderBoardSelect() {
-  const sel = $('#boardSelect');
-  sel.innerHTML = state.data.boards.map(b =>
-    `<option value="${b.id}" ${b.id===state.boardId?'selected':''}>${esc(b.name)}</option>`
-  ).join('');
-}
+    function showConfirmModal({ title, message, confirmText, danger }) {
+      return new Promise(resolve => {
+        const back = document.createElement('div');
+        back.className = 'custom-modal-back';
+        back.innerHTML = `
+      <div class="custom-modal">
+        <h3>${esc(title)}</h3>
+        <p>${esc(message)}</p>
+        <div class="btns">
+          <button class="btn ghost" data-cancel>İptal</button>
+          <button class="btn ${danger ? 'danger' : 'primary'}" data-confirm>${esc(confirmText || 'Evet')}</button>
+        </div>
+      </div>
+    `;
+        document.body.appendChild(back);
 
-$('#boardSelect').addEventListener('change', e => {
-  state.boardId = e.target.value;
-  renderBoard();
-});
+        const close = (val) => { back.remove(); resolve(val); };
+        back.querySelector('[data-cancel]').onclick = () => close(false);
+        back.querySelector('[data-confirm]').onclick = () => close(true);
+      });
+    }
 
-$('#newBoardBtn').addEventListener('click', () => {
-  const name = prompt('Yeni board adı:', 'Yeni Board');
-  if (!name) return;
-  const id = uid('b_');
-  state.data.boards.push({ id, name: name.trim(), createdAt: now() });
-  state.boardId = id;
-  saveData(); renderBoardSelect(); renderBoard();
-});
+    // ---------- tiny utilities ----------
+    const $ = (s, r = document) => r.querySelector(s);
+    const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+    const uid = (p = '') => p + Math.random().toString(36).slice(2, 10) + Date.now().toString(36).slice(-3);
+    const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    const now = () => Date.now();
 
-$('#renameBoardBtn').addEventListener('click', () => {
-  const b = state.data.boards.find(x => x.id === state.boardId);
-  if (!b) return;
-  const name = prompt('Board adı:', b.name);
-  if (!name) return;
-  b.name = name.trim();
-  saveData(); renderBoardSelect();
-});
+    let _toastTimer = null;
+    function toast(msg, opts) {
+      // opts: { undo: fn, duration }
+      document.querySelectorAll('.toast').forEach(x => x.remove());
+      clearTimeout(_toastTimer);
+      const t = document.createElement('div');
+      t.className = 'toast';
+      t.innerHTML = `<span>${esc(msg)}</span>`;
+      if (opts?.undo) {
+        const b = document.createElement('button');
+        b.textContent = 'Geri al';
+        b.onclick = () => { opts.undo(); t.remove(); };
+        t.appendChild(b);
+      }
+      document.body.appendChild(t);
+      _toastTimer = setTimeout(() => t.remove(), opts?.duration ?? 2600);
+    }
 
-$('#deleteBoardBtn').addEventListener('click', () => {
-  const b = state.data.boards.find(x => x.id === state.boardId);
-  if (!b) return;
-  if (!confirm(`"${b.name}" board\'ı ve tüm sütun/kartları silinecek. Emin misin?`)) return;
-  const colIds = new Set(state.data.columns.filter(c => c.boardId === b.id).map(c => c.id));
-  state.data.cards = state.data.cards.filter(k => !colIds.has(k.columnId));
-  state.data.columns = state.data.columns.filter(c => c.boardId !== b.id);
-  state.data.boards = state.data.boards.filter(x => x.id !== b.id);
-  if (state.data.boards.length === 0) {
-    seedExampleBoard();
-  }
-  state.boardId = state.data.boards[0].id;
-  saveData(); renderBoardSelect(); renderBoard();
-});
+    function avatarColor(seed = '') {
+      let h = 0; for (const c of seed) h = (h * 31 + c.charCodeAt(0)) >>> 0;
+      const palette = ['#6366f1', '#10b981', '#f59e0b', '#ef4444', '#06b6d4', '#ec4899', '#8b5cf6', '#14b8a6'];
+      return palette[h % palette.length];
+    }
+    function initials(name = '') {
+      return name.trim().split(/\s+/).slice(0, 2).map(s => s[0]?.toUpperCase() ?? '').join('') || '?';
+    }
 
-// ---------- RENDER: board ----------
-function currentColumns() {
-  return state.data.columns
-    .filter(c => c.boardId === state.boardId)
-    .sort((a,b) => a.order < b.order ? -1 : a.order > b.order ? 1 : 0);
-}
-function cardsOf(colId) {
-  return state.data.cards
-    .filter(k => k.columnId === colId)
-    .sort((a,b) => a.order < b.order ? -1 : a.order > b.order ? 1 : 0);
-}
+    // ---------- password hashing (PBKDF2) ----------
+    async function hashPassword(password, saltB64) {
+      const enc = new TextEncoder();
+      const salt = saltB64
+        ? Uint8Array.from(atob(saltB64), c => c.charCodeAt(0))
+        : crypto.getRandomValues(new Uint8Array(16));
+      const key = await crypto.subtle.importKey('raw', enc.encode(password), { name: 'PBKDF2' }, false, ['deriveBits']);
+      const bits = await crypto.subtle.deriveBits(
+        { name: 'PBKDF2', salt, iterations: 120000, hash: 'SHA-256' }, key, 256);
+      const hashB64 = btoa(String.fromCharCode(...new Uint8Array(bits)));
+      const sB64 = btoa(String.fromCharCode(...salt));
+      return { hash: hashB64, salt: sB64 };
+    }
 
-function cardMatches(card) {
-  if (state.labelFilter.size) {
-    for (const id of state.labelFilter) if (!(card.labels||[]).includes(id)) return false;
-  }
-  if (!state.search) return true;
-  const q = state.search.toLowerCase();
-  return (card.title||'').toLowerCase().includes(q) || (card.desc||'').toLowerCase().includes(q);
-}
+    // ---------- fractional indexing ----------
+    // Her sıra için string tabanlı key üretiriz; iki komşu arasına yeni bir key üretmek
+    // tüm listeyi yeniden numaralamaya gerek bırakmaz. Basit base-62 implementasyonu.
+    const BASE = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+    const B = BASE.length;
+    function keyBetween(a, b) {
+      // a < b, her ikisi de null olabilir
+      a = a ?? ""; b = b ?? "";
+      let i = 0, result = "";
+      while (true) {
+        const ac = i < a.length ? BASE.indexOf(a[i]) : 0;
+        const bc = i < b.length ? BASE.indexOf(b[i]) : B;
+        if (ac === bc) { result += BASE[ac]; i++; continue; }
+        if (bc - ac > 1) { const mid = Math.floor((ac + bc) / 2); return result + BASE[mid]; }
+        // bc - ac === 1 -> a'dan devam et, sona bir karakter ekleyeceğiz
+        result += BASE[ac]; i++;
+        while (true) {
+          const ac2 = i < a.length ? BASE.indexOf(a[i]) : 0;
+          if (ac2 < B - 1) { return result + BASE[Math.floor((ac2 + B) / 2)]; }
+          result += BASE[ac2]; i++;
+        }
+      }
+    }
 
-function cardHTML(card) {
-  const dim = state.search && !cardMatches(card);
-  const labelsHTML = (card.labels||[]).map(id => {
-    const l = labelById(id); if (!l) return '';
-    return `<span class="lbl" title="${esc(l.name)}" style="background:${l.color}"></span>`;
-  }).join('');
-  let dueHTML = '';
-  if (card.due) {
-    const d = new Date(card.due + 'T00:00');
-    const diff = Math.floor((d - new Date(new Date().toDateString())) / 86400000);
-    const cls = diff < 0 ? 'over' : diff <= 2 ? 'soon' : '';
-    const lbl = d.toLocaleDateString('tr-TR', { day:'2-digit', month:'short' });
-    dueHTML = `<span class="due ${cls}"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18M8 3v4M16 3v4"/></svg> ${lbl}</span>`;
-  }
-  const descIcon = card.desc ? `<span class="meta-badge" title="Açıklama var"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h10"/></svg></span>` : '';
-  const actIcon = (card.activity?.length > 1) ? `<span class="meta-badge" title="Aktivite">📜 ${card.activity.length}</span>` : '';
-  const cl = card.checklist || [];
-  const clDone = cl.filter(i => i.done).length;
-  const clHTML = cl.length ? `<span class="meta-badge" title="Alt görevler">✓ ${clDone}/${cl.length}</span>` : '';
-  const progHTML = cl.length ? `<div class="progress-bar ${clDone===cl.length?'full':''}"><span style="width:${Math.round(clDone/cl.length*100)}%"></span></div>` : '';
-  const avatars = (card.assignees||[]).map(em => {
-    const users = getJSON(K.users, {});
-    const nm = users[em]?.name || em;
-    return `<span class="avatar" title="${esc(nm)}" style="background:${avatarColor(em)}">${esc(initials(nm))}</span>`;
-  }).join('');
-  const meta = (dueHTML || descIcon || actIcon || clHTML || avatars)
-    ? `<div class="card-meta">${dueHTML}${descIcon}${clHTML}${actIcon}<span class="card-assignees">${avatars}</span></div>`
-    : '';
-  return `<div class="card" data-id="${card.id}" tabindex="0" role="button" aria-label="${esc(card.title||'kart')}" style="${dim?'opacity:.25':''}">
+    // ---------- storage ----------
+    const K = {
+      users: 'tf.users',    // { [email]: {name, salt, hash, createdAt} }
+      session: 'tf.session',  // email
+      data: 'tf.data',     // { boards:[], columns:[], cards:[] }  (per-user under tf.data.<email>)
+      theme: 'tf.theme'
+    };
+    const getJSON = (k, d) => { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch { return d; } };
+    const setJSON = (k, v) => localStorage.setItem(k, JSON.stringify(v));
+
+    function dataKey(email) { return K.data + '.' + email; }
+    function loadData() { return getJSON(dataKey(state.user.email), { boards: [], columns: [], cards: [] }); }
+    function saveData(silent) { setJSON(dataKey(state.user.email), state.data); if (!silent) broadcast('data'); }
+
+    // ---------- state ----------
+    const state = {
+      user: null,          // {email, name}
+      data: null,          // {boards, columns, cards}
+      boardId: null,
+      editingCardId: null,
+      search: '',
+      labelFilter: new Set(), // filter by labels (AND -> kart tüm seçilenleri taşımalı)
+    };
+
+    // ---------- cross-tab sync (BroadcastChannel) ----------
+    let bc = null;
+    try { bc = new BroadcastChannel('taskflow'); } catch { /* old browsers */ }
+    function broadcast(kind) { if (bc && state.user) bc.postMessage({ kind, email: state.user.email, t: Date.now() }); }
+    if (bc) bc.onmessage = (e) => {
+      if (!state.user || e.data?.email !== state.user.email) return;
+      // another tab updated this user's data -> reload from storage, preserve UI state
+      state.data = loadData();
+      renderBoardSelect();
+      if (!state.data.boards.find(b => b.id === state.boardId)) state.boardId = state.data.boards[0]?.id;
+      renderBoard();
+      toast('Başka bir sekmede güncellendi');
+    };
+
+    const LABELS = [
+      { id: 'red', color: '#ef4444', name: 'Acil' },
+      { id: 'orange', color: '#f59e0b', name: 'Önemli' },
+      { id: 'green', color: '#10b981', name: 'Hazır' },
+      { id: 'blue', color: '#3b82f6', name: 'İnceleme' },
+      { id: 'purple', color: '#8b5cf6', name: 'Tasarım' },
+      { id: 'gray', color: '#64748b', name: 'Notlar' },
+    ];
+    const labelById = id => LABELS.find(l => l.id === id);
+
+    // ---------- AUTH ----------
+    const authEl = $('#auth'), appEl = $('#app');
+    let authMode = 'login';
+
+    function showAuth() {
+      appEl.style.display = 'none';
+      authEl.style.display = '';
+      $('#authErr').textContent = '';
+    }
+    function setAuthMode(mode) {
+      authMode = mode;
+      const login = mode === 'login';
+      $('#authTitle').textContent = login ? 'Tekrar hoşgeldin' : 'Hesap oluştur';
+      $('#authSub').textContent = login ? 'Hesabına giriş yap ve kaldığın yerden devam et.' : 'Saniyeler içinde board\'ını oluştur.';
+      $('#authBtn').textContent = login ? 'Giriş yap' : 'Kayıt ol';
+      $('#switchText').textContent = login ? 'Hesabın yok mu?' : 'Hesabın var mı?';
+      $('#switchBtn').textContent = login ? 'Kayıt ol' : 'Giriş yap';
+      $('#nameField').style.display = login ? 'none' : '';
+      $('#authPass').autocomplete = login ? 'current-password' : 'new-password';
+      $('#authErr').textContent = '';
+    }
+    $('#switchBtn').addEventListener('click', () => setAuthMode(authMode === 'login' ? 'register' : 'login'));
+
+    $('#authForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = $('#authEmail').value.trim().toLowerCase();
+      const pass = $('#authPass').value;
+      const name = $('#authName').value.trim();
+      const err = $('#authErr');
+      err.textContent = '';
+      if (!email || !pass || (authMode === 'register' && !name)) { err.textContent = 'Tüm alanları doldur.'; return; }
+      const users = getJSON(K.users, {});
+      try {
+        if (authMode === 'register') {
+          if (users[email]) { err.textContent = 'Bu e-posta zaten kayıtlı.'; return; }
+          const { hash, salt } = await hashPassword(pass);
+          users[email] = { name, hash, salt, createdAt: now() };
+          setJSON(K.users, users);
+          setJSON(K.session, email);
+          await bootApp();
+        } else {
+          const u = users[email];
+          if (!u) { err.textContent = 'Kullanıcı bulunamadı.'; return; }
+          const { hash } = await hashPassword(pass, u.salt);
+          if (hash !== u.hash) { err.textContent = 'Şifre hatalı.'; return; }
+          setJSON(K.session, email);
+          await bootApp();
+        }
+      } catch (ex) {
+        console.error(ex);
+        err.textContent = 'Bir hata oluştu, tekrar dene.';
+      }
+    });
+
+    function logout() {
+      localStorage.removeItem(K.session);
+      state.user = null; state.data = null; state.boardId = null;
+      setAuthMode('login');
+      showAuth();
+    }
+
+    // ---------- APP BOOT ----------
+    async function bootApp() {
+      const email = getJSON(K.session, null);
+      if (!email) { setAuthMode('login'); showAuth(); return; }
+      const users = getJSON(K.users, {});
+      const u = users[email];
+      if (!u) { logout(); return; }
+      state.user = { email, name: u.name };
+      state.data = loadData();
+      if (state.data.boards.length === 0) seedExampleBoard();
+      state.boardId = state.data.boards[0].id;
+
+      authEl.style.display = 'none';
+      appEl.style.display = '';
+      $('#userBtn').textContent = initials(state.user.name);
+      $('#userBtn').style.background = avatarColor(state.user.email);
+      $('#dropName').textContent = state.user.name;
+      $('#dropEmail').textContent = state.user.email;
+
+      renderBoardSelect();
+      renderBoard();
+    }
+
+    function seedExampleBoard() {
+      const bId = uid('b_');
+      state.data.boards.push({ id: bId, name: 'İlk Board\'ım', createdAt: now() });
+      const cols = [
+        { name: 'Yapılacaklar' },
+        { name: 'Devam Ediyor' },
+        { name: 'İncelemede' },
+        { name: 'Tamamlandı' },
+      ];
+      let prev = null;
+      cols.forEach((c, i) => {
+        const colId = uid('c_');
+        const order = keyBetween(prev, null);
+        state.data.columns.push({ id: colId, boardId: bId, name: c.name, order });
+        prev = order;
+        if (i === 0) {
+          const samples = [
+            { title: '🚀 TaskFlow\'a Hoş Geldin!', desc: 'Kartları sürükle, yeni sütunlar ekle ve detayları düzenlemek için kartların üzerine tıkla. Mobil uyumlu!', labels: ['green'] },
+            { title: '🔥 Acil Auth Bug Düzeltmesi', desc: 'Login ekranındaki orbların animasyon performansını artır.\n\nNot: Production için kritik!', labels: ['red', 'orange'], due: new Date(Date.now() + 1 * 86400000).toISOString().slice(0, 10) },
+            { title: '✨ Premium UI İncelemesi', desc: 'Glassmorphism efektleri ve gradientlerin tüm tarayıcılarda kusursuz çalıştığını kontrol et.', labels: ['purple', 'blue'] },
+            { title: '📊 Vercel Deployment Testi', desc: 'Uygulamanın build alıp Vercel üzerinde canlıya çıkmasını sağla.', labels: ['blue'] }
+          ];
+          let pk = null;
+          samples.forEach(s => {
+            const k = keyBetween(pk, null);
+            state.data.cards.push({
+              id: uid('k_'), columnId: colId,
+              title: s.title, desc: s.desc || '',
+              labels: s.labels || [], due: s.due || '',
+              assignees: [state.user.email],
+              activity: [{ t: now(), text: 'kart oluşturuldu' }],
+              order: k, createdAt: now()
+            });
+            pk = k;
+          });
+        }
+      });
+      saveData();
+    }
+
+    // ---------- RENDER: board select ----------
+    function renderBoardSelect() {
+      const sel = $('#boardSelect');
+      sel.innerHTML = state.data.boards.map(b =>
+        `<option value="${b.id}" ${b.id === state.boardId ? 'selected' : ''}>${esc(b.name)}</option>`
+      ).join('');
+    }
+
+    $('#boardSelect').addEventListener('change', e => {
+      state.boardId = e.target.value;
+      renderBoard();
+    });
+
+    $('#newBoardBtn').addEventListener('click', async () => {
+      const name = await showPromptModal({ title: 'Yeni Board', placeholder: 'Board adı...', defaultValue: 'Yeni Board', confirmText: 'Oluştur' });
+      if (!name) return;
+      const id = uid('b_');
+      state.data.boards.push({ id, name: name.trim(), createdAt: now() });
+      state.boardId = id;
+      saveData(); renderBoardSelect(); renderBoard();
+    });
+
+    $('#renameBoardBtn').addEventListener('click', async () => {
+      const b = state.data.boards.find(x => x.id === state.boardId);
+      if (!b) return;
+      const name = await showPromptModal({ title: 'Board Adını Değiştir', defaultValue: b.name, confirmText: 'Kaydet' });
+      if (!name) return;
+      b.name = name.trim();
+      saveData(); renderBoardSelect();
+    });
+
+    $('#deleteBoardBtn').addEventListener('click', async () => {
+      const b = state.data.boards.find(x => x.id === state.boardId);
+      if (!b) return;
+      const ok = await showConfirmModal({ title: 'Board\'u Sil', message: `"${b.name}" board\'ı ve tüm sütun/kartları kalıcı olarak silinecek. Emin misin?`, confirmText: 'Sil', danger: true });
+      if (!ok) return;
+      const colIds = new Set(state.data.columns.filter(c => c.boardId === b.id).map(c => c.id));
+      state.data.cards = state.data.cards.filter(k => !colIds.has(k.columnId));
+      state.data.columns = state.data.columns.filter(c => c.boardId !== b.id);
+      state.data.boards = state.data.boards.filter(x => x.id !== b.id);
+      if (state.data.boards.length === 0) {
+        seedExampleBoard();
+      }
+      state.boardId = state.data.boards[0].id;
+      saveData(); renderBoardSelect(); renderBoard();
+    });
+
+    // ---------- RENDER: board ----------
+    function currentColumns() {
+      return state.data.columns
+        .filter(c => c.boardId === state.boardId)
+        .sort((a, b) => a.order < b.order ? -1 : a.order > b.order ? 1 : 0);
+    }
+    function cardsOf(colId) {
+      return state.data.cards
+        .filter(k => k.columnId === colId)
+        .sort((a, b) => a.order < b.order ? -1 : a.order > b.order ? 1 : 0);
+    }
+
+    function cardMatches(card) {
+      if (state.labelFilter.size) {
+        for (const id of state.labelFilter) if (!(card.labels || []).includes(id)) return false;
+      }
+      if (!state.search) return true;
+      const q = state.search.toLowerCase();
+      return (card.title || '').toLowerCase().includes(q) || (card.desc || '').toLowerCase().includes(q);
+    }
+
+    function cardHTML(card) {
+      const dim = state.search && !cardMatches(card);
+      const labelsHTML = (card.labels || []).map(id => {
+        const l = labelById(id); if (!l) return '';
+        return `<span class="lbl" title="${esc(l.name)}" style="background:${l.color}"></span>`;
+      }).join('');
+      let dueHTML = '';
+      if (card.due) {
+        const d = new Date(card.due + 'T00:00');
+        const diff = Math.floor((d - new Date(new Date().toDateString())) / 86400000);
+        const cls = diff < 0 ? 'over' : diff <= 2 ? 'soon' : '';
+        const lbl = d.toLocaleDateString('tr-TR', { day: '2-digit', month: 'short' });
+        dueHTML = `<span class="due ${cls}"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18M8 3v4M16 3v4"/></svg> ${lbl}</span>`;
+      }
+      const descIcon = card.desc ? `<span class="meta-badge" title="Açıklama var"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h10"/></svg></span>` : '';
+      const actIcon = (card.activity?.length > 1) ? `<span class="meta-badge" title="Aktivite">📜 ${card.activity.length}</span>` : '';
+      const cl = card.checklist || [];
+      const clDone = cl.filter(i => i.done).length;
+      const clHTML = cl.length ? `<span class="meta-badge" title="Alt görevler">✓ ${clDone}/${cl.length}</span>` : '';
+      const progHTML = cl.length ? `<div class="progress-bar ${clDone === cl.length ? 'full' : ''}"><span style="width:${Math.round(clDone / cl.length * 100)}%"></span></div>` : '';
+      const avatars = (card.assignees || []).map(em => {
+        const users = getJSON(K.users, {});
+        const nm = users[em]?.name || em;
+        return `<span class="avatar" title="${esc(nm)}" style="background:${avatarColor(em)}">${esc(initials(nm))}</span>`;
+      }).join('');
+      const meta = (dueHTML || descIcon || actIcon || clHTML || avatars)
+        ? `<div class="card-meta">${dueHTML}${descIcon}${clHTML}${actIcon}<span class="card-assignees">${avatars}</span></div>`
+        : '';
+      return `<div class="card" data-id="${card.id}" tabindex="0" role="button" aria-label="${esc(card.title || 'kart')}" style="${dim ? 'opacity:.25' : ''}">
     ${labelsHTML ? `<div class="card-labels">${labelsHTML}</div>` : ''}
     <div class="card-title">${esc(card.title || '(başlıksız)')}</div>
     ${progHTML}
     ${meta}
   </div>`;
-}
+    }
 
-function columnHTML(col) {
-  const cards = cardsOf(col.id);
-  return `<div class="column" data-id="${col.id}">
+    function columnHTML(col) {
+      const cards = cardsOf(col.id);
+      return `<div class="column" data-id="${col.id}">
     <div class="col-head">
       <div class="col-title" data-id="${col.id}" title="Başlığı düzenlemek için çift tıkla">${esc(col.name)}</div>
       <span class="col-count">${cards.length}</span>
       <button class="btn ghost sm col-menu" data-del-col="${col.id}" title="Sütunu sil">✕</button>
     </div>
+
     <div class="cards" data-col="${col.id}">
+      ${cards.length === 0 ? `<div class="empty-col">Henüz kart yok</div>` : ''}
       ${cards.map(cardHTML).join('')}
     </div>
     <button class="add-card" data-add-card="${col.id}">
@@ -826,260 +1816,274 @@ function columnHTML(col) {
       Kart ekle
     </button>
   </div>`;
-}
+    }
 
-let sortables = [];
-function destroySortables() { sortables.forEach(s => s.destroy()); sortables = []; }
+    let sortables = [];
+    function destroySortables() { sortables.forEach(s => s.destroy()); sortables = []; }
 
-function renderFilterBar() {
-  const bar = $('#filterBar');
-  const used = new Set();
-  state.data.cards.forEach(k => {
-    const col = state.data.columns.find(c => c.id === k.columnId);
-    if (col?.boardId === state.boardId) (k.labels||[]).forEach(l => used.add(l));
-  });
-  if (!used.size) { bar.style.display = 'none'; bar.innerHTML = ''; return; }
-  bar.style.display = '';
-  bar.innerHTML = `<span class="f-label">Filtre:</span>` +
-    LABELS.filter(l => used.has(l.id)).map(l =>
-      `<button class="f-chip ${state.labelFilter.has(l.id)?'on':''}" data-l="${l.id}" style="background:${l.color};color:${l.color}"><span style="color:#fff">${esc(l.name)}</span></button>`
-    ).join('') +
-    (state.labelFilter.size ? `<button class="f-clear" id="fClear">Temizle</button>` : '');
-}
-$('#filterBar').addEventListener('click', (e) => {
-  const chip = e.target.closest('[data-l]');
-  if (chip) {
-    const id = chip.dataset.l;
-    if (state.labelFilter.has(id)) state.labelFilter.delete(id); else state.labelFilter.add(id);
-    renderFilterBar(); applyCardVisibility();
-    return;
-  }
-  if (e.target.id === 'fClear') { state.labelFilter.clear(); renderFilterBar(); applyCardVisibility(); }
-});
-function applyCardVisibility() {
-  $$('.card').forEach(el => {
-    const c = state.data.cards.find(k => k.id === el.dataset.id);
-    const hide = c && !cardMatches(c);
-    el.style.opacity = hide ? '.2' : '';
-    el.style.pointerEvents = hide ? 'none' : '';
-  });
-}
+    function renderFilterBar() {
+      const bar = $('#filterBar');
+      const used = new Set();
+      state.data.cards.forEach(k => {
+        const col = state.data.columns.find(c => c.id === k.columnId);
+        if (col?.boardId === state.boardId) (k.labels || []).forEach(l => used.add(l));
+      });
+      if (!used.size) { bar.style.display = 'none'; bar.innerHTML = ''; return; }
+      bar.style.display = '';
+      bar.innerHTML = `<span class="f-label">Filtre:</span>` +
+        LABELS.filter(l => used.has(l.id)).map(l =>
+          `<button class="f-chip ${state.labelFilter.has(l.id) ? 'on' : ''}" data-l="${l.id}" style="background:${l.color};color:${l.color}"><span style="color:#fff">${esc(l.name)}</span></button>`
+        ).join('') +
+        (state.labelFilter.size ? `<button class="f-clear" id="fClear">Temizle</button>` : '');
+    }
+    $('#filterBar').addEventListener('click', (e) => {
+      const chip = e.target.closest('[data-l]');
+      if (chip) {
+        const id = chip.dataset.l;
+        if (state.labelFilter.has(id)) state.labelFilter.delete(id); else state.labelFilter.add(id);
+        renderFilterBar(); applyCardVisibility();
+        return;
+      }
+      if (e.target.id === 'fClear') { state.labelFilter.clear(); renderFilterBar(); applyCardVisibility(); }
+    });
+    function applyCardVisibility() {
+      $$('.card').forEach(el => {
+        const c = state.data.cards.find(k => k.id === el.dataset.id);
+        const hide = c && !cardMatches(c);
+        el.style.opacity = hide ? '.2' : '';
+        el.style.pointerEvents = hide ? 'none' : '';
+      });
+    }
 
-function renderBoard() {
-  destroySortables();
-  renderFilterBar();
-  const wrap = $('#boardWrap');
-  const cols = currentColumns();
-  wrap.innerHTML = cols.map(columnHTML).join('') + `
-    <button class="add-column-btn" id="addColBtn">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
-      Sütun ekle
-    </button>`;
+    function renderBoard() {
+      destroySortables();
+      renderFilterBar();
+      const wrap = $('#boardWrap');
+      const cols = currentColumns();
 
-  // column-level sortable (reorder columns by dragging their headers)
-  sortables.push(new Sortable(wrap, {
-    animation: 150,
-    handle: '.col-head',
-    filter: 'button, .col-title[contenteditable="true"]',
-    draggable: '.column',
-    ghostClass: 'col-ghost',
-    delay: 120, delayOnTouchOnly: true, touchStartThreshold: 4,
-    onEnd: onColumnSorted
-  }));
+      if (cols.length === 0) {
+        wrap.innerHTML = `<div class="empty-board">
+      <div style="font-size:48px; margin-bottom:16px">📋</div>
+      <h2 style="color:var(--text)">Henüz sütun yok</h2>
+      <p>Projeye başlamak için ilk sütununu oluştur.</p>
+      <button class="btn primary" onclick="addColumnInline()">+ Sütun Ekle</button>
+    </div>`;
+      } else {
+        wrap.innerHTML = cols.map(columnHTML).join('') + `
+      <button class="add-column-btn" id="addColBtn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+        Sütun ekle
+      </button>`;
+      }
 
-  // each column's cards list
-  $$('.cards', wrap).forEach(list => {
-    sortables.push(new Sortable(list, {
-      group: 'cards',
-      animation: 160,
-      ghostClass: 'sortable-ghost',
-      chosenClass: 'sortable-chosen',
-      dragClass:  'sortable-drag',
-      delay: 120, delayOnTouchOnly: true, touchStartThreshold: 4,
-      onEnd: onCardSorted,
-    }));
-  });
-}
 
-// Column sorting -> recompute orders from DOM
-function onColumnSorted() {
-  const ids = $$('#boardWrap .column').map(el => el.dataset.id);
-  let prev = null;
-  ids.forEach(id => {
-    const col = state.data.columns.find(c => c.id === id);
-    const k = keyBetween(prev, null);
-    col.order = k;
-    prev = k;
-  });
-  saveData();
-}
+      // column-level sortable (reorder columns by dragging their headers)
+      sortables.push(new Sortable(wrap, {
+        animation: 150,
+        handle: '.col-head',
+        filter: 'button, .col-title[contenteditable="true"]',
+        draggable: '.column',
+        ghostClass: 'col-ghost',
+        delay: 120, delayOnTouchOnly: true, touchStartThreshold: 4,
+        onEnd: onColumnSorted
+      }));
 
-// Card moved within or across columns
-function onCardSorted(evt) {
-  const cardId = evt.item.dataset.id;
-  const newColId = evt.to.dataset.col;
-  const listEls = [...evt.to.children];
-  const idx = listEls.indexOf(evt.item);
-  const prevId = listEls[idx-1]?.dataset.id ?? null;
-  const nextId = listEls[idx+1]?.dataset.id ?? null;
-  const prev = prevId ? state.data.cards.find(k => k.id === prevId).order : null;
-  const next = nextId ? state.data.cards.find(k => k.id === nextId).order : null;
+      // each column's cards list
+      $$('.cards', wrap).forEach(list => {
+        sortables.push(new Sortable(list, {
+          group: 'cards',
+          animation: 160,
+          ghostClass: 'sortable-ghost',
+          chosenClass: 'sortable-chosen',
+          dragClass: 'sortable-drag',
+          filter: '.empty-col',
+          delay: 120, delayOnTouchOnly: true, touchStartThreshold: 4,
+          onEnd: onCardSorted,
+        }));
+      });
+    }
 
-  const card = state.data.cards.find(k => k.id === cardId);
-  const oldColId = card.columnId;
-  card.columnId = newColId;
-  card.order = keyBetween(prev, next);
-  if (oldColId !== newColId) {
-    const oldName = state.data.columns.find(c => c.id === oldColId)?.name;
-    const newName = state.data.columns.find(c => c.id === newColId)?.name;
-    card.activity = card.activity || [];
-    card.activity.push({ t: now(), text: `"${oldName}" → "${newName}" sütununa taşındı` });
-  }
-  saveData();
-  // counts refresh
-  $$('.column').forEach(col => {
-    const cnt = col.querySelectorAll('.card').length;
-    col.querySelector('.col-count').textContent = cnt;
-  });
-}
+    // Column sorting -> recompute orders from DOM
+    function onColumnSorted() {
+      const ids = $$('#boardWrap .column').map(el => el.dataset.id);
+      let prev = null;
+      ids.forEach(id => {
+        const col = state.data.columns.find(c => c.id === id);
+        const k = keyBetween(prev, null);
+        col.order = k;
+        prev = k;
+      });
+      saveData();
+    }
 
-// ---------- Board event delegation ----------
-$('#boardWrap').addEventListener('click', (e) => {
-  const addCol = e.target.closest('#addColBtn');
-  if (addCol) return addColumnInline();
+    // Card moved within or across columns
+    function onCardSorted(evt) {
+      const cardId = evt.item.dataset.id;
+      const newColId = evt.to.dataset.col;
+      const listEls = [...evt.to.children].filter(el => !el.classList.contains('empty-col'));
+      const idx = listEls.indexOf(evt.item);
+      const prevId = listEls[idx - 1]?.dataset.id ?? null;
+      const nextId = listEls[idx + 1]?.dataset.id ?? null;
+      const prev = prevId ? state.data.cards.find(k => k.id === prevId).order : null;
+      const next = nextId ? state.data.cards.find(k => k.id === nextId).order : null;
 
-  const delCol = e.target.closest('[data-del-col]');
-  if (delCol) return deleteColumn(delCol.dataset.delCol);
+      const card = state.data.cards.find(k => k.id === cardId);
+      const oldColId = card.columnId;
+      card.columnId = newColId;
+      card.order = keyBetween(prev, next);
+      if (oldColId !== newColId) {
+        const oldName = state.data.columns.find(c => c.id === oldColId)?.name;
+        const newName = state.data.columns.find(c => c.id === newColId)?.name;
+        card.activity = card.activity || [];
+        card.activity.push({ t: now(), text: `"${oldName}" → "${newName}" sütununa taşındı` });
+      }
+      saveData();
+      // counts refresh
+      $$('.column').forEach(col => {
+        const cnt = col.querySelectorAll('.card').length;
+        col.querySelector('.col-count').textContent = cnt;
+      });
+    }
 
-  const addCard = e.target.closest('[data-add-card]');
-  if (addCard) return openComposer(addCard.dataset.addCard, addCard);
+    // ---------- Board event delegation ----------
+    $('#boardWrap').addEventListener('click', (e) => {
+      const addCol = e.target.closest('#addColBtn');
+      if (addCol) return addColumnInline();
 
-  const card = e.target.closest('.card');
-  if (card) return openCardModal(card.dataset.id);
-});
+      const delCol = e.target.closest('[data-del-col]');
+      if (delCol) return deleteColumn(delCol.dataset.delCol);
 
-$('#boardWrap').addEventListener('dblclick', (e) => {
-  const t = e.target.closest('.col-title');
-  if (!t) return;
-  t.setAttribute('contenteditable', 'true');
-  t.focus();
-  document.getSelection().selectAllChildren(t);
-});
-$('#boardWrap').addEventListener('keydown', (e) => {
-  const t = e.target.closest('.col-title[contenteditable="true"]');
-  if (!t) return;
-  if (e.key === 'Enter') { e.preventDefault(); t.blur(); }
-  if (e.key === 'Escape') { t.textContent = state.data.columns.find(c => c.id === t.dataset.id).name; t.blur(); }
-});
-$('#boardWrap').addEventListener('focusout', (e) => {
-  const t = e.target.closest('.col-title[contenteditable="true"]');
-  if (!t) return;
-  const col = state.data.columns.find(c => c.id === t.dataset.id);
-  const name = t.textContent.trim() || col.name;
-  col.name = name;
-  t.removeAttribute('contenteditable');
-  t.textContent = name;
-  saveData();
-});
+      const addCard = e.target.closest('[data-add-card]');
+      if (addCard) return openComposer(addCard.dataset.addCard, addCard);
 
-function addColumnInline() {
-  const name = prompt('Sütun adı:', 'Yeni Sütun');
-  if (!name) return;
-  const last = currentColumns().slice(-1)[0]?.order ?? null;
-  state.data.columns.push({ id: uid('c_'), boardId: state.boardId, name: name.trim(), order: keyBetween(last, null) });
-  saveData(); renderBoard();
-  $('#boardWrap').scrollTo({ left: $('#boardWrap').scrollWidth, behavior:'smooth' });
-}
+      const card = e.target.closest('.card');
+      if (card) return openCardModal(card.dataset.id);
+    });
 
-function deleteColumn(colId) {
-  const col = state.data.columns.find(c => c.id === colId);
-  if (!col) return;
-  const removedCards = state.data.cards.filter(k => k.columnId === colId);
-  state.data.cards = state.data.cards.filter(k => k.columnId !== colId);
-  state.data.columns = state.data.columns.filter(c => c.id !== colId);
-  saveData(); renderBoard();
-  toast(`"${col.name}" silindi`, { undo: () => {
-    state.data.columns.push(col);
-    state.data.cards.push(...removedCards);
-    saveData(); renderBoard();
-  }, duration: 5000 });
-}
+    $('#boardWrap').addEventListener('dblclick', (e) => {
+      const t = e.target.closest('.col-title');
+      if (!t) return;
+      t.setAttribute('contenteditable', 'true');
+      t.focus();
+      document.getSelection().selectAllChildren(t);
+    });
+    $('#boardWrap').addEventListener('keydown', (e) => {
+      const t = e.target.closest('.col-title[contenteditable="true"]');
+      if (!t) return;
+      if (e.key === 'Enter') { e.preventDefault(); t.blur(); }
+      if (e.key === 'Escape') { t.textContent = state.data.columns.find(c => c.id === t.dataset.id).name; t.blur(); }
+    });
+    $('#boardWrap').addEventListener('focusout', (e) => {
+      const t = e.target.closest('.col-title[contenteditable="true"]');
+      if (!t) return;
+      const col = state.data.columns.find(c => c.id === t.dataset.id);
+      const name = t.textContent.trim() || col.name;
+      col.name = name;
+      t.removeAttribute('contenteditable');
+      t.textContent = name;
+      saveData();
+    });
 
-// Inline composer for new card
-function openComposer(colId, anchor) {
-  if (anchor.previousElementSibling?.classList.contains('compose')) return;
-  const box = document.createElement('div');
-  box.className = 'compose';
-  box.innerHTML = `
+    async function addColumnInline() {
+      const name = await showPromptModal({ title: 'Sütun Ekle', defaultValue: 'Yeni Sütun', confirmText: 'Ekle' });
+      if (!name) return;
+      const last = currentColumns().slice(-1)[0]?.order ?? null;
+      state.data.columns.push({ id: uid('c_'), boardId: state.boardId, name: name.trim(), order: keyBetween(last, null) });
+      saveData(); renderBoard();
+      $('#boardWrap').scrollTo({ left: $('#boardWrap').scrollWidth, behavior: 'smooth' });
+    }
+
+    function deleteColumn(colId) {
+      const col = state.data.columns.find(c => c.id === colId);
+      if (!col) return;
+      const removedCards = state.data.cards.filter(k => k.columnId === colId);
+      state.data.cards = state.data.cards.filter(k => k.columnId !== colId);
+      state.data.columns = state.data.columns.filter(c => c.id !== colId);
+      saveData(); renderBoard();
+      toast(`"${col.name}" silindi`, {
+        undo: () => {
+          state.data.columns.push(col);
+          state.data.cards.push(...removedCards);
+          saveData(); renderBoard();
+        }, duration: 5000
+      });
+    }
+
+    // Inline composer for new card
+    function openComposer(colId, anchor) {
+      if (anchor.previousElementSibling?.classList.contains('compose')) return;
+      const box = document.createElement('div');
+      box.className = 'compose';
+      box.innerHTML = `
     <textarea placeholder="Kart başlığı gir, Enter ile kaydet…"></textarea>
     <div class="compose-row">
       <button class="btn primary sm" data-save>Ekle</button>
       <button class="btn ghost sm" data-cancel>İptal</button>
     </div>`;
-  anchor.before(box);
-  const ta = box.querySelector('textarea');
-  ta.focus();
-  const close = () => box.remove();
-  const save = () => {
-    const title = ta.value.trim(); if (!title) { close(); return; }
-    const last = cardsOf(colId).slice(-1)[0]?.order ?? null;
-    state.data.cards.push({
-      id: uid('k_'), columnId: colId, title, desc:'',
-      labels: [], due: '', assignees: [state.user.email],
-      activity: [{ t: now(), text:'kart oluşturuldu' }],
-      order: keyBetween(last, null), createdAt: now()
-    });
-    saveData(); renderBoard();
-  };
-  box.querySelector('[data-save]').onclick = save;
-  box.querySelector('[data-cancel]').onclick = close;
-  ta.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); save(); }
-    if (e.key === 'Escape') close();
-  });
-}
+      anchor.before(box);
+      const ta = box.querySelector('textarea');
+      ta.focus();
+      const close = () => box.remove();
+      const save = () => {
+        const title = ta.value.trim(); if (!title) { close(); return; }
+        const last = cardsOf(colId).slice(-1)[0]?.order ?? null;
+        state.data.cards.push({
+          id: uid('k_'), columnId: colId, title, desc: '',
+          labels: [], due: '', assignees: [state.user.email],
+          activity: [{ t: now(), text: 'kart oluşturuldu' }],
+          order: keyBetween(last, null), createdAt: now()
+        });
+        saveData(); renderBoard();
+      };
+      box.querySelector('[data-save]').onclick = save;
+      box.querySelector('[data-cancel]').onclick = close;
+      ta.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); save(); }
+        if (e.key === 'Escape') close();
+      });
+    }
 
-// ---------- CARD MODAL ----------
-function openCardModal(cardId) {
-  const card = state.data.cards.find(k => k.id === cardId);
-  if (!card) return;
-  state.editingCardId = cardId;
-  const col = state.data.columns.find(c => c.id === card.columnId);
-  const users = getJSON(K.users, {});
-  const members = [...new Set([state.user.email, ...(card.assignees||[])])];
+    // ---------- CARD MODAL ----------
+    function openCardModal(cardId) {
+      const card = state.data.cards.find(k => k.id === cardId);
+      if (!card) return;
+      state.editingCardId = cardId;
+      const col = state.data.columns.find(c => c.id === card.columnId);
+      const users = getJSON(K.users, {});
+      const members = [...new Set([state.user.email, ...(card.assignees || [])])];
 
-  const root = document.createElement('div');
-  root.className = 'modal-back';
-  root.innerHTML = `
+      const root = document.createElement('div');
+      root.className = 'modal-back';
+      root.innerHTML = `
     <div class="modal" role="dialog" aria-modal="true">
       <div class="modal-head">
         <h3 id="mTitle" title="Tıklayıp düzenle">${esc(card.title)}</h3>
         <button class="btn ghost icon" id="mClose">✕</button>
       </div>
-      <div style="padding:0 20px; color:var(--text-dim); font-size:12.5px">Sütun: <b>${esc(col?.name||'-')}</b></div>
+      <div style="padding:0 20px; color:var(--text-dim); font-size:12.5px">Sütun: <b>${esc(col?.name || '-')}</b></div>
       <div class="modal-body">
         <div>
           <h4>Açıklama</h4>
-          <textarea id="mDesc" placeholder="Bu kart hakkında notlar, linkler…">${esc(card.desc||'')}</textarea>
+          <textarea id="mDesc" placeholder="Bu kart hakkında notlar, linkler…">${esc(card.desc || '')}</textarea>
         </div>
         <div class="two">
           <div>
             <h4>Etiketler</h4>
             <div class="label-pick" id="mLabels">
-              ${LABELS.map(l => `<button data-id="${l.id}" style="background:${l.color};color:${l.color}" class="${(card.labels||[]).includes(l.id)?'on':''}"><span style="color:#fff">${esc(l.name)}</span></button>`).join('')}
+              ${LABELS.map(l => `<button data-id="${l.id}" style="background:${l.color};color:${l.color}" class="${(card.labels || []).includes(l.id) ? 'on' : ''}"><span style="color:#fff">${esc(l.name)}</span></button>`).join('')}
             </div>
           </div>
           <div>
             <h4>Son teslim tarihi</h4>
-            <input type="date" id="mDue" value="${esc(card.due||'')}" />
+            <input type="date" id="mDue" value="${esc(card.due || '')}" />
           </div>
         </div>
         <div>
           <h4>Sorumlular</h4>
           <div class="member-pick" id="mMembers">
-            ${Object.entries(users).map(([em,u]) =>
-              `<span class="avatar ${members.includes(em)&&(card.assignees||[]).includes(em)?'on':''}" data-em="${esc(em)}" title="${esc(u.name)} — ${esc(em)}" style="background:${avatarColor(em)}">${esc(initials(u.name))}</span>`
-            ).join('')}
+            ${Object.entries(users).map(([em, u]) =>
+        `<span class="avatar ${members.includes(em) && (card.assignees || []).includes(em) ? 'on' : ''}" data-em="${esc(em)}" title="${esc(u.name)} — ${esc(em)}" style="background:${avatarColor(em)}">${esc(initials(u.name))}</span>`
+      ).join('')}
             <span style="color:var(--text-dim); font-size:12px">Tıkla → ata / çıkar</span>
           </div>
         </div>
@@ -1091,9 +2095,9 @@ function openCardModal(cardId) {
         <div>
           <h4>Aktivite geçmişi</h4>
           <div class="activity" id="mActivity">
-            ${(card.activity||[]).slice().reverse().map(a =>
-              `<div><span class="dot"></span>${esc(a.text)} <span style="opacity:.6"> · ${new Date(a.t).toLocaleString('tr-TR')}</span></div>`
-            ).join('') || '<div style="opacity:.6">Aktivite yok</div>'}
+            ${(card.activity || []).slice().reverse().map(a =>
+        `<div><span class="dot"></span>${esc(a.text)} <span style="opacity:.6"> · ${new Date(a.t).toLocaleString('tr-TR')}</span></div>`
+      ).join('') || '<div style="opacity:.6">Aktivite yok</div>'}
           </div>
         </div>
         <div style="display:flex; gap:8px; padding-top: 4px">
@@ -1104,106 +2108,108 @@ function openCardModal(cardId) {
         </div>
       </div>
     </div>`;
-  document.body.appendChild(root);
-  const close = () => { root.remove(); state.editingCardId = null; };
-  root.addEventListener('click', (e) => { if (e.target === root) close(); });
-  $('#mClose', root).onclick = close;
-  $('#mCancel', root).onclick = close;
-  document.addEventListener('keydown', function onEsc(e){ if (e.key==='Escape') { close(); document.removeEventListener('keydown', onEsc); }});
+      document.body.appendChild(root);
+      const close = () => { root.remove(); state.editingCardId = null; };
+      root.addEventListener('click', (e) => { if (e.target === root) close(); });
+      $('#mClose', root).onclick = close;
+      $('#mCancel', root).onclick = close;
+      document.addEventListener('keydown', function onEsc(e) { if (e.key === 'Escape') { close(); document.removeEventListener('keydown', onEsc); } });
 
-  const titleEl = $('#mTitle', root);
-  titleEl.addEventListener('click', () => {
-    titleEl.setAttribute('contenteditable','true');
-    titleEl.focus();
-    document.getSelection().selectAllChildren(titleEl);
-  });
-  titleEl.addEventListener('keydown', e => { if (e.key==='Enter'){ e.preventDefault(); titleEl.blur(); }});
+      const titleEl = $('#mTitle', root);
+      titleEl.addEventListener('click', () => {
+        titleEl.setAttribute('contenteditable', 'true');
+        titleEl.focus();
+        document.getSelection().selectAllChildren(titleEl);
+      });
+      titleEl.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); titleEl.blur(); } });
 
-  // labels
-  $$('#mLabels button', root).forEach(b => b.onclick = () => b.classList.toggle('on'));
-  // members
-  $$('#mMembers .avatar', root).forEach(a => a.onclick = () => a.classList.toggle('on'));
+      // labels
+      $$('#mLabels button', root).forEach(b => b.onclick = () => b.classList.toggle('on'));
+      // members
+      $$('#mMembers .avatar', root).forEach(a => a.onclick = () => a.classList.toggle('on'));
 
-  // checklist (working copy — kaydedince card'a yazılır)
-  let clDraft = (card.checklist || []).map(i => ({...i}));
-  const clHost = $('#mChecklist', root);
-  function renderCl() {
-    clHost.innerHTML = clDraft.map((it,i) =>
-      `<div class="cl-item ${it.done?'done':''}" data-i="${i}">
-        <input type="checkbox" ${it.done?'checked':''} aria-label="tamam" />
+      // checklist (working copy — kaydedince card'a yazılır)
+      let clDraft = (card.checklist || []).map(i => ({ ...i }));
+      const clHost = $('#mChecklist', root);
+      function renderCl() {
+        clHost.innerHTML = clDraft.map((it, i) =>
+          `<div class="cl-item ${it.done ? 'done' : ''}" data-i="${i}">
+        <input type="checkbox" ${it.done ? 'checked' : ''} aria-label="tamam" />
         <input type="text" value="${esc(it.text)}" placeholder="Alt görev…" />
         <button title="Sil" aria-label="Sil">✕</button>
       </div>`).join('');
-  }
-  renderCl();
-  clHost.addEventListener('input', (e) => {
-    const row = e.target.closest('[data-i]'); if (!row) return;
-    const i = +row.dataset.i;
-    if (e.target.type === 'checkbox') { clDraft[i].done = e.target.checked; row.classList.toggle('done', e.target.checked); }
-    else if (e.target.type === 'text') { clDraft[i].text = e.target.value; }
-  });
-  clHost.addEventListener('click', (e) => {
-    const btn = e.target.closest('button'); if (!btn) return;
-    const row = btn.closest('[data-i]'); clDraft.splice(+row.dataset.i, 1); renderCl();
-  });
-  $('#mAddCl', root).onclick = () => {
-    clDraft.push({ id: uid('cl_'), text:'', done:false });
-    renderCl();
-    const last = clHost.querySelector('[data-i]:last-child input[type="text"]');
-    last?.focus();
-  };
+      }
+      renderCl();
+      clHost.addEventListener('input', (e) => {
+        const row = e.target.closest('[data-i]'); if (!row) return;
+        const i = +row.dataset.i;
+        if (e.target.type === 'checkbox') { clDraft[i].done = e.target.checked; row.classList.toggle('done', e.target.checked); }
+        else if (e.target.type === 'text') { clDraft[i].text = e.target.value; }
+      });
+      clHost.addEventListener('click', (e) => {
+        const btn = e.target.closest('button'); if (!btn) return;
+        const row = btn.closest('[data-i]'); clDraft.splice(+row.dataset.i, 1); renderCl();
+      });
+      $('#mAddCl', root).onclick = () => {
+        clDraft.push({ id: uid('cl_'), text: '', done: false });
+        renderCl();
+        const last = clHost.querySelector('[data-i]:last-child input[type="text"]');
+        last?.focus();
+      };
 
-  $('#mDelete', root).onclick = () => {
-    const snapshot = JSON.parse(JSON.stringify(card));
-    state.data.cards = state.data.cards.filter(k => k.id !== cardId);
-    saveData(); close(); renderBoard();
-    toast('Kart silindi', { undo: () => {
-      state.data.cards.push(snapshot);
-      saveData(); renderBoard();
-    }, duration: 5000 });
-  };
+      $('#mDelete', root).onclick = () => {
+        const snapshot = JSON.parse(JSON.stringify(card));
+        state.data.cards = state.data.cards.filter(k => k.id !== cardId);
+        saveData(); close(); renderBoard();
+        toast('Kart silindi', {
+          undo: () => {
+            state.data.cards.push(snapshot);
+            saveData(); renderBoard();
+          }, duration: 5000
+        });
+      };
 
-  $('#mSave', root).onclick = () => {
-    const oldTitle = card.title;
-    const newTitle = titleEl.textContent.trim() || oldTitle;
-    const newDesc = $('#mDesc', root).value;
-    const newDue  = $('#mDue', root).value;
-    const newLabels = $$('#mLabels button.on', root).map(b => b.dataset.id);
-    const newAssignees = $$('#mMembers .avatar.on', root).map(a => a.dataset.em);
+      $('#mSave', root).onclick = () => {
+        const oldTitle = card.title;
+        const newTitle = titleEl.textContent.trim() || oldTitle;
+        const newDesc = $('#mDesc', root).value;
+        const newDue = $('#mDue', root).value;
+        const newLabels = $$('#mLabels button.on', root).map(b => b.dataset.id);
+        const newAssignees = $$('#mMembers .avatar.on', root).map(a => a.dataset.em);
 
-    const diffs = [];
-    if (newTitle !== oldTitle) diffs.push(`başlık değiştirildi`);
-    if (newDesc !== (card.desc||'')) diffs.push(`açıklama güncellendi`);
-    if ((newDue||'') !== (card.due||'')) diffs.push(newDue ? `son tarih ${newDue}` : `son tarih kaldırıldı`);
-    if (JSON.stringify(newLabels) !== JSON.stringify(card.labels||[])) diffs.push(`etiketler güncellendi`);
-    if (JSON.stringify(newAssignees) !== JSON.stringify(card.assignees||[])) diffs.push(`sorumlular güncellendi`);
-    const cleanCl = clDraft.map(i => ({ id: i.id, text: i.text.trim(), done: !!i.done })).filter(i => i.text);
-    if (JSON.stringify(cleanCl) !== JSON.stringify(card.checklist||[])) diffs.push(`alt görevler güncellendi`);
+        const diffs = [];
+        if (newTitle !== oldTitle) diffs.push(`başlık değiştirildi`);
+        if (newDesc !== (card.desc || '')) diffs.push(`açıklama güncellendi`);
+        if ((newDue || '') !== (card.due || '')) diffs.push(newDue ? `son tarih ${newDue}` : `son tarih kaldırıldı`);
+        if (JSON.stringify(newLabels) !== JSON.stringify(card.labels || [])) diffs.push(`etiketler güncellendi`);
+        if (JSON.stringify(newAssignees) !== JSON.stringify(card.assignees || [])) diffs.push(`sorumlular güncellendi`);
+        const cleanCl = clDraft.map(i => ({ id: i.id, text: i.text.trim(), done: !!i.done })).filter(i => i.text);
+        if (JSON.stringify(cleanCl) !== JSON.stringify(card.checklist || [])) diffs.push(`alt görevler güncellendi`);
 
-    card.title = newTitle;
-    card.desc = newDesc;
-    card.due = newDue;
-    card.labels = newLabels;
-    card.assignees = newAssignees;
-    card.checklist = cleanCl;
-    card.activity = card.activity || [];
-    if (diffs.length) card.activity.push({ t: now(), text: diffs.join(', ') });
-    saveData(); close(); renderBoard();
-    toast('Kart güncellendi');
-  };
-}
+        card.title = newTitle;
+        card.desc = newDesc;
+        card.due = newDue;
+        card.labels = newLabels;
+        card.assignees = newAssignees;
+        card.checklist = cleanCl;
+        card.activity = card.activity || [];
+        if (diffs.length) card.activity.push({ t: now(), text: diffs.join(', ') });
+        saveData(); close(); renderBoard();
+        toast('Kart güncellendi');
+      };
+    }
 
-// ---------- search ----------
-$('#searchInput').addEventListener('input', (e) => {
-  state.search = e.target.value.trim();
-  applyCardVisibility();
-});
+    // ---------- search ----------
+    $('#searchInput').addEventListener('input', (e) => {
+      state.search = e.target.value.trim();
+      applyCardVisibility();
+    });
 
-// ---------- shortcut help ----------
-function openHelp() {
-  const root = document.createElement('div');
-  root.className = 'modal-back';
-  root.innerHTML = `
+    // ---------- shortcut help ----------
+    function openHelp() {
+      const root = document.createElement('div');
+      root.className = 'modal-back';
+      root.innerHTML = `
     <div class="modal" role="dialog" aria-modal="true" aria-label="Klavye kısayolları">
       <div class="modal-head">
         <h3>Klavye kısayolları</h3>
@@ -1224,88 +2230,90 @@ function openHelp() {
         </div>
       </div>
     </div>`;
-  document.body.appendChild(root);
-  const close = () => root.remove();
-  root.addEventListener('click', e => { if (e.target===root || e.target.closest('[data-close]')) close(); });
-  document.addEventListener('keydown', function h(e){ if (e.key==='Escape'){ close(); document.removeEventListener('keydown', h);} });
-}
-$('#helpBtn').addEventListener('click', openHelp);
-
-// ---------- theme ----------
-function applyTheme(mode) {
-  document.documentElement.setAttribute('data-theme', mode);
-  $('#themeBtn').textContent = mode === 'dark' ? '☀️' : '🌙';
-  localStorage.setItem(K.theme, mode);
-}
-applyTheme(localStorage.getItem(K.theme) ||
-  (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'));
-$('#themeBtn').addEventListener('click', () => {
-  applyTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
-});
-
-// ---------- user menu ----------
-const dd = $('#userDropdown');
-$('#userBtn').addEventListener('click', (e) => {
-  e.stopPropagation();
-  dd.style.display = dd.style.display === 'none' ? '' : 'none';
-});
-document.addEventListener('click', (e) => {
-  if (!e.target.closest('.user-menu')) dd.style.display = 'none';
-});
-$('#logoutBtn').addEventListener('click', logout);
-
-$('#exportBtn').addEventListener('click', () => {
-  const blob = new Blob([JSON.stringify(state.data, null, 2)], {type:'application/json'});
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = `taskflow-${state.user.email}-${new Date().toISOString().slice(0,10)}.json`;
-  a.click();
-  toast('Dışa aktarıldı');
-});
-$('#importBtn').addEventListener('click', () => $('#importFile').click());
-$('#importFile').addEventListener('change', (e) => {
-  const f = e.target.files[0]; if (!f) return;
-  const r = new FileReader();
-  r.onload = () => {
-    try {
-      const d = JSON.parse(r.result);
-      if (!d.boards || !d.columns || !d.cards) throw 0;
-      if (!confirm('Mevcut veri yerine bu veri yüklensin mi?')) return;
-      state.data = d;
-      saveData();
-      state.boardId = d.boards[0]?.id;
-      if (!state.boardId) seedExampleBoard(), state.boardId = state.data.boards[0].id;
-      renderBoardSelect(); renderBoard();
-      toast('İçe aktarıldı');
-    } catch { toast('Geçersiz dosya'); }
-  };
-  r.readAsText(f);
-  e.target.value = '';
-});
-
-// ---------- keyboard ----------
-document.addEventListener('keydown', (e) => {
-  if (e.target.matches('input, textarea, [contenteditable="true"]')) return;
-  if (e.key === '/') { e.preventDefault(); $('#searchInput').focus(); }
-  if (e.key === '?') { e.preventDefault(); openHelp(); }
-  if (e.key === 'n' || e.key === 'N') {
-    const firstCol = currentColumns()[0];
-    if (firstCol) {
-      const btn = $(`[data-add-card="${firstCol.id}"]`);
-      if (btn) openComposer(firstCol.id, btn);
+      document.body.appendChild(root);
+      const close = () => root.remove();
+      root.addEventListener('click', e => { if (e.target === root || e.target.closest('[data-close]')) close(); });
+      document.addEventListener('keydown', function h(e) { if (e.key === 'Escape') { close(); document.removeEventListener('keydown', h); } });
     }
-  }
-  if ((e.key === 'Enter' || e.key === ' ') && e.target.classList.contains('card')) {
-    e.preventDefault(); openCardModal(e.target.dataset.id);
-  }
-});
+    $('#helpBtn').addEventListener('click', openHelp);
 
-// ---------- start ----------
-(function init() {
-  const email = getJSON(K.session, null);
-  if (email) bootApp();
-  else { setAuthMode('login'); showAuth(); }
-})();
-</script>
+    // ---------- theme ----------
+    function applyTheme(mode) {
+      document.documentElement.setAttribute('data-theme', mode);
+      $('#themeBtn').textContent = mode === 'dark' ? '☀️' : '🌙';
+      localStorage.setItem(K.theme, mode);
+    }
+    applyTheme(localStorage.getItem(K.theme) ||
+      (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'));
+    $('#themeBtn').addEventListener('click', () => {
+      applyTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+    });
+
+    // ---------- user menu ----------
+    const dd = $('#userDropdown');
+    $('#userBtn').addEventListener('click', (e) => {
+      e.stopPropagation();
+      dd.style.display = dd.style.display === 'none' ? '' : 'none';
+    });
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.user-menu')) dd.style.display = 'none';
+    });
+    $('#logoutBtn').addEventListener('click', logout);
+
+    $('#exportBtn').addEventListener('click', () => {
+      const blob = new Blob([JSON.stringify(state.data, null, 2)], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `taskflow-${state.user.email}-${new Date().toISOString().slice(0, 10)}.json`;
+      a.click();
+      toast('Dışa aktarıldı');
+    });
+    $('#importBtn').addEventListener('click', () => $('#importFile').click());
+    $('#importFile').addEventListener('change', (e) => {
+      const f = e.target.files[0]; if (!f) return;
+      const r = new FileReader();
+      r.onload = async () => {
+        try {
+          const d = JSON.parse(r.result);
+          if (!d.boards || !d.columns || !d.cards) throw 0;
+          const ok = await showConfirmModal({ title: 'İçe Aktar', message: 'Mevcut veri yerine bu veri yüklensin mi? Tüm değişiklikler kaybolacak.', confirmText: 'Yükle', danger: true });
+          if (!ok) return;
+          state.data = d;
+          saveData();
+          state.boardId = d.boards[0]?.id;
+          if (!state.boardId) seedExampleBoard(), state.boardId = state.data.boards[0].id;
+          renderBoardSelect(); renderBoard();
+          toast('İçe aktarıldı');
+        } catch { toast('Geçersiz dosya'); }
+      };
+      r.readAsText(f);
+      e.target.value = '';
+    });
+
+    // ---------- keyboard ----------
+    document.addEventListener('keydown', (e) => {
+      if (e.target.matches('input, textarea, [contenteditable="true"]')) return;
+      if (e.key === '/') { e.preventDefault(); $('#searchInput').focus(); }
+      if (e.key === '?') { e.preventDefault(); openHelp(); }
+      if (e.key === 'n' || e.key === 'N') {
+        const firstCol = currentColumns()[0];
+        if (firstCol) {
+          const btn = $(`[data-add-card="${firstCol.id}"]`);
+          if (btn) openComposer(firstCol.id, btn);
+        }
+      }
+      if ((e.key === 'Enter' || e.key === ' ') && e.target.classList.contains('card')) {
+        e.preventDefault(); openCardModal(e.target.dataset.id);
+      }
+    });
+
+    // ---------- start ----------
+    (function init() {
+      const email = getJSON(K.session, null);
+      if (email) bootApp();
+      else { setAuthMode('login'); showAuth(); }
+    })();
+  </script>
 </body>
+
 </html>
